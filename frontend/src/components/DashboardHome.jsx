@@ -130,100 +130,22 @@ function DailyGoalCard({ todayCount, goal, onChangeGoal }) {
   );
 }
 
-function QuestionCard({ entry, getToken }) {
-  const [exercises, setExercises] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+function timeAgo(ts) {
+  const diff = Date.now() - new Date(ts).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(ts).toLocaleDateString();
+}
 
-  async function generatePractice() {
-    setLoading(true);
-    setError(null);
-    setExpanded(true);
-    try {
-      const token = await getToken();
-      const data = await getRecommendations(
-        [{ subject: entry.subject, topic: entry.topic, subtopic: entry.subtopic, difficulty_level: entry.difficulty_level }],
-        token
-      );
-      setExercises(data.exercises);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const timeAgo = (ts) => {
-    const diff = Date.now() - new Date(ts).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'Just now';
-    if (mins < 60) return `${mins}m ago`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}h ago`;
-    const days = Math.floor(hrs / 24);
-    if (days < 7) return `${days}d ago`;
-    return new Date(ts).toLocaleDateString();
-  };
-
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap gap-1.5 mb-2">
-              <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">{entry.subject}</span>
-              <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-xs font-medium">{entry.topic}</span>
-              {entry.subtopic && (
-                <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-medium">{entry.subtopic}</span>
-              )}
-              <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-xs">{entry.difficulty_level}</span>
-            </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed">{entry.extracted_text}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{timeAgo(entry.timestamp)}</p>
-          </div>
-        </div>
-
-        <div className="flex gap-2 mt-3">
-          <button
-            onClick={generatePractice}
-            disabled={loading}
-            className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
-          >
-            {loading ? 'Generating...' : exercises ? 'New Questions' : 'Generate Practice'}
-          </button>
-          {exercises && (
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer"
-            >
-              {expanded ? 'Hide' : 'Show'} Questions
-            </button>
-          )}
-        </div>
-      </div>
-
-      {expanded && loading && (
-        <div className="border-t border-gray-100 dark:border-gray-700 p-6 flex items-center justify-center">
-          <div className="h-6 w-6 border-3 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
-        </div>
-      )}
-
-      {expanded && error && (
-        <div className="border-t border-gray-100 dark:border-gray-700 p-4">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-        </div>
-      )}
-
-      {expanded && exercises && (
-        <div className="border-t border-gray-100 dark:border-gray-700 p-4 space-y-3">
-          {exercises.map((exercise, i) => (
-            <ExerciseCard key={i} exercise={exercise} index={i} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+function questionTitle(entry) {
+  const parts = [entry.subject, entry.topic];
+  if (entry.subtopic) parts.push(entry.subtopic);
+  return parts.join(' \u2022 ');
 }
 
 /* ─── Main Dashboard ─── */
@@ -240,35 +162,25 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
   }
 
   return (
-    <div className="space-y-6">
-      {/* Streak + Daily Goal */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <StreakCard streak={streak} />
-        <DailyGoalCard todayCount={todayCount} goal={goal} onChangeGoal={handleChangeGoal} />
-      </div>
-
-      {/* Study Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalAnalyses}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Questions analyzed</p>
+    <div className="space-y-4">
+      {/* Analyze New Question */}
+      <button
+        onClick={onUploadClick}
+        className="w-full text-left bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-blue-500/25 hover:scale-[1.01] transition-all duration-200 group"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">&#x1F4F7;</span>
+            <div>
+              <h3 className="text-base font-semibold text-white">Analyze New Question</h3>
+              <p className="text-white/70 text-xs mt-0.5">Upload a photo to get started</p>
+            </div>
+          </div>
+          <svg className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.uniqueTopics}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Topics covered</p>
-        </div>
-      </div>
+      </button>
 
-      {/* Subject Badges */}
-      <div className="flex flex-wrap gap-2">
-        {stats.subjectCounts.map(([subject, count]) => (
-          <span key={subject} className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
-            {subject} ({count})
-          </span>
-        ))}
-      </div>
-
-      {/* Daily Practice Launch Card */}
+      {/* Daily Practice */}
       <button
         onClick={onStartPractice}
         className="w-full text-left bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.01] transition-all duration-200 group"
@@ -285,27 +197,46 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
         </div>
       </button>
 
-      {/* Your Questions */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Your Questions</h3>
-        <div className="space-y-3">
-          {history.map((entry) => (
-            <QuestionCard key={entry.id} entry={entry} getToken={getToken} />
-          ))}
+      {/* Study Stats + Daily Goal */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalAnalyses}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Questions</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.uniqueTopics}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Topics</p>
         </div>
       </div>
 
-      {/* Upload CTA */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-center">
-        <h3 className="text-lg font-semibold text-white mb-2">Analyze a new question</h3>
-        <p className="text-blue-100 text-sm mb-4">Upload a homework or exam screenshot to get study recommendations</p>
-        <button
-          onClick={onUploadClick}
-          className="px-6 py-2.5 bg-white text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors cursor-pointer"
-        >
-          Upload image
-        </button>
+      <DailyGoalCard todayCount={todayCount} goal={goal} onChangeGoal={handleChangeGoal} />
+
+      {/* Subject Badges */}
+      {stats.subjectCounts.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {stats.subjectCounts.map(([subject, count]) => (
+            <span key={subject} className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
+              {subject} ({count})
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Recent Questions */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+        <div className="px-4 py-3">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recent</h3>
+        </div>
+        {history.slice(0, 8).map((entry) => (
+          <div key={entry.id} className="px-4 py-3 flex items-center justify-between gap-3">
+            <p className="text-sm text-gray-700 dark:text-gray-300 truncate">{questionTitle(entry)}</p>
+            <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">{timeAgo(entry.timestamp)}</span>
+          </div>
+        ))}
       </div>
+
+      {/* Study Streak */}
+      <StreakCard streak={streak} />
     </div>
   );
 }
