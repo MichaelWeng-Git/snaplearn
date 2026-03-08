@@ -17,7 +17,7 @@ All notable changes to SnapLearn are documented in this file.
 ## [1.5.0] - 2025-03-08
 
 ### Added
-- Pushed entire project to GitHub: [github.com/MichaelWeng-Git/snaplearn](https://github.com/MichaelWeng-Git/snaplearn)
+- Pushed entire project to GitHub: [github.com/MW-Stranger/snaplearn](https://github.com/MW-Stranger/snaplearn)
 
 ---
 

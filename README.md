@@ -65,7 +65,7 @@ snaplearn/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/MichaelWeng-Git/snaplearn.git
+git clone https://github.com/MW-Stranger/snaplearn.git
 cd snaplearn/frontend
 npm install
 ```
