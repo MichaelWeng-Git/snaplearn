@@ -4,6 +4,15 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [1.9.0] - 2025-03-08
+
+### Added
+- **Study Streak** — orange gradient card showing consecutive days of study activity, with motivational messages (Good start / Great momentum / Amazing!)
+- **Daily Goal** — set a daily target for questions to analyze (default 5), shows progress bar and today's count; goal is editable and saved to localStorage
+- Goal completion celebrated with green checkmark and "Goal reached!" message
+
+---
+
 ## [1.8.3] - 2025-03-08
 
 ### Changed

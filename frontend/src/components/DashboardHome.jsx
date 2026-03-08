@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ExerciseCard } from './ResultsDisplay';
 import { getRecommendations } from '../api/client';
 
+/* ─── Helpers ─── */
+
 function getStudyStats(history) {
   const subjects = {};
   const topics = new Set();
@@ -14,6 +16,120 @@ function getStudyStats(history) {
     uniqueTopics: topics.size,
     subjectCounts: Object.entries(subjects).sort((a, b) => b[1] - a[1]),
   };
+}
+
+function toDateStr(d) {
+  return new Date(d).toISOString().split('T')[0];
+}
+
+function getStreak(history) {
+  if (!history.length) return 0;
+  const days = new Set(history.map(e => toDateStr(e.timestamp)));
+  const today = toDateStr(new Date());
+  if (!days.has(today)) {
+    const yesterday = toDateStr(new Date(Date.now() - 86400000));
+    if (!days.has(yesterday)) return 0;
+  }
+  let streak = 0;
+  let date = new Date();
+  if (!days.has(toDateStr(date))) {
+    date = new Date(Date.now() - 86400000);
+  }
+  while (days.has(toDateStr(date))) {
+    streak++;
+    date = new Date(date.getTime() - 86400000);
+  }
+  return streak;
+}
+
+function getTodayCount(history) {
+  const today = toDateStr(new Date());
+  return history.filter(e => toDateStr(e.timestamp) === today).length;
+}
+
+function getDailyGoal() {
+  return parseInt(localStorage.getItem('dailyGoal') || '5', 10);
+}
+
+function setDailyGoal(val) {
+  localStorage.setItem('dailyGoal', String(val));
+}
+
+/* ─── Components ─── */
+
+function StreakCard({ streak }) {
+  return (
+    <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl p-4 text-white">
+      <div className="flex items-center gap-2 mb-1">
+        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 23c-3.866 0-7-2.686-7-6 0-1.655.924-3.87 2.66-6.38C9.394 8.292 11.052 6.09 12 5c.948 1.09 2.606 3.292 4.34 5.62C18.076 13.13 19 15.345 19 17c0 3.314-3.134 6-7 6zm0-14.5c-1.34 1.732-2.8 3.722-3.87 5.3C7.06 15.56 7 16.6 7 17c0 2.21 2.239 4 5 4s5-1.79 5-4c0-.4-.06-1.44-1.13-3.2-1.07-1.578-2.53-3.568-3.87-5.3z" /></svg>
+        <span className="text-sm font-semibold opacity-90">Study Streak</span>
+      </div>
+      <p className="text-3xl font-extrabold">{streak} <span className="text-base font-medium opacity-80">{streak === 1 ? 'day' : 'days'}</span></p>
+      {streak >= 7 && <p className="text-xs opacity-80 mt-1">Amazing! Keep it going!</p>}
+      {streak >= 3 && streak < 7 && <p className="text-xs opacity-80 mt-1">Great momentum!</p>}
+      {streak > 0 && streak < 3 && <p className="text-xs opacity-80 mt-1">Good start!</p>}
+      {streak === 0 && <p className="text-xs opacity-80 mt-1">Analyze a question to start!</p>}
+    </div>
+  );
+}
+
+function DailyGoalCard({ todayCount, goal, onChangeGoal }) {
+  const [editing, setEditing] = useState(false);
+  const [tempGoal, setTempGoal] = useState(goal);
+  const progress = Math.min(todayCount / goal, 1);
+  const pct = Math.round(progress * 100);
+  const done = todayCount >= goal;
+
+  function saveGoal() {
+    const val = Math.max(1, Math.min(50, tempGoal));
+    onChangeGoal(val);
+    setEditing(false);
+  }
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">Today's Goal</span>
+        </div>
+        {!editing ? (
+          <button onClick={() => { setTempGoal(goal); setEditing(true); }} className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium cursor-pointer">Edit</button>
+        ) : (
+          <div className="flex items-center gap-1.5">
+            <input
+              type="number"
+              min={1}
+              max={50}
+              value={tempGoal}
+              onChange={e => setTempGoal(parseInt(e.target.value) || 1)}
+              className="w-14 px-2 py-0.5 text-xs text-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            />
+            <button onClick={saveGoal} className="text-xs text-blue-600 dark:text-blue-400 font-medium cursor-pointer">Save</button>
+          </div>
+        )}
+      </div>
+      <div className="flex items-end gap-3">
+        <div className="flex-1">
+          <div className="flex items-baseline gap-1 mb-2">
+            <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">{todayCount}</span>
+            <span className="text-sm text-gray-400">/ {goal}</span>
+          </div>
+          <div className="w-full h-2.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${done ? 'bg-green-500' : 'bg-blue-600'}`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+        </div>
+        {done && (
+          <span className="text-green-500 text-lg shrink-0">&#10003;</span>
+        )}
+      </div>
+      {done && <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">Goal reached! Great work today!</p>}
+      {!done && todayCount > 0 && <p className="text-xs text-gray-400 mt-2">{goal - todayCount} more to reach your goal</p>}
+    </div>
+  );
 }
 
 function QuestionCard({ entry, getToken }) {
@@ -112,11 +228,27 @@ function QuestionCard({ entry, getToken }) {
   );
 }
 
+/* ─── Main Dashboard ─── */
+
 export default function DashboardHome({ history, getToken, onUploadClick }) {
   const stats = getStudyStats(history);
+  const streak = getStreak(history);
+  const todayCount = getTodayCount(history);
+  const [goal, setGoal] = useState(getDailyGoal);
+
+  function handleChangeGoal(val) {
+    setDailyGoal(val);
+    setGoal(val);
+  }
 
   return (
     <div className="space-y-6">
+      {/* Streak + Daily Goal */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <StreakCard streak={streak} />
+        <DailyGoalCard todayCount={todayCount} goal={goal} onChangeGoal={handleChangeGoal} />
+      </div>
+
       {/* Study Stats */}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
