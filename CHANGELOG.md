@@ -4,6 +4,13 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [1.8.2] - 2025-03-08
+
+### Added
+- **Back to dashboard on analysis view** — when viewing a saved analysis from history, top and bottom "Back to dashboard" buttons return to main dashboard
+
+---
+
 ## [1.8.1] - 2025-03-08
 
 ### Added

@@ -246,9 +246,15 @@ function Dashboard() {
       <main className="max-w-3xl mx-auto px-4 py-8">
         {viewingHistoryItem ? (
           <div className="space-y-6">
-            <div className="text-center"><span className="text-xs text-gray-500 dark:text-gray-400">Viewing saved analysis from {new Date(viewingHistoryItem.timestamp).toLocaleString()}</span></div>
+            <div className="text-center">
+              <button onClick={handleReset} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer mb-4">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                Back to dashboard
+              </button>
+              <div><span className="text-xs text-gray-500 dark:text-gray-400">Viewing saved analysis from {new Date(viewingHistoryItem.timestamp).toLocaleString()}</span></div>
+            </div>
             <ResultsDisplay data={viewingHistoryItem} />
-            <div className="text-center pt-4 pb-8"><button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Analyze new question</button></div>
+            <div className="text-center pt-4 pb-8"><button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">Back to dashboard</button></div>
           </div>
         ) : (
           <>
