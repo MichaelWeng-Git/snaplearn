@@ -166,17 +166,16 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
       {/* Analyze New Question */}
       <button
         onClick={onUploadClick}
-        className="w-full text-left bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-blue-500/25 hover:scale-[1.01] transition-all duration-200 group"
+        className="w-full bg-white dark:bg-gray-800 rounded-2xl p-6 cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all duration-200 group"
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">&#x1F4F7;</span>
-            <div>
-              <h3 className="text-base font-semibold text-white">Analyze New Question</h3>
-              <p className="text-white/70 text-xs mt-0.5">Upload a photo to get started</p>
-            </div>
+        <div className="flex flex-col items-center gap-3 py-2">
+          <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <svg className="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" /></svg>
           </div>
-          <svg className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Analyze New Question</h3>
+            <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">Snap a photo of any problem</p>
+          </div>
         </div>
       </button>
 
