@@ -1,14 +1,12 @@
 # Python
 __pycache__/
 *.pyc
-backend/venv/
-backend/.env
+.env
 
 # Node
-frontend/node_modules/
-frontend/dist/
+node_modules/
+dist/
 .env.local
-frontend/.env.local
 
 # Vercel
 .vercel/
@@ -18,4 +16,4 @@ frontend/.env.local
 .idea/
 *.swp
 .DS_Store
-.vercel
+backend/

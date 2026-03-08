@@ -1,47 +1,55 @@
 # SnapLearn
 
-AI-powered study assistant that turns any homework or exam photo into a personalized study plan.
+> AI-powered study assistant — upload any homework or exam photo, get a personalized study plan instantly.
 
-**Live app:** [snaplearn-app.vercel.app](https://snaplearn-app.vercel.app)
+**Live:** [snaplearn-app.vercel.app](https://snaplearn-app.vercel.app)
+
+---
 
 ## Features
 
-- **Image Analysis** — Upload a photo of any homework, exam, or textbook problem. GPT-4o Vision extracts the text and classifies the subject, topic, and grade level.
-- **Accurate Grade Detection** — Identifies specific grade levels from Pre-K through Postgraduate.
-- **Study Recommendations** — Get key concepts, clear explanations, and a step-by-step study path.
-- **Multiple-Choice Practice** — AI-generated quiz questions with instant feedback and explanations.
-- **Resource Links** — Clickable links to real educational platforms (Khan Academy, Coursera, YouTube, etc.).
-- **Common Mistakes** — Learn what pitfalls to avoid before you make them.
-- **History** — View past analyses saved in your browser.
-- **Profile & Account Settings** — Manage your profile via Clerk authentication.
-- **Dark Mode** — Toggle between light and dark themes.
+| Feature | Description |
+|---------|-------------|
+| Image Analysis | GPT-4o Vision extracts text and classifies subject, topic, and grade level |
+| Grade Detection | Specific levels from Pre-K to Postgraduate |
+| Study Plan | Key concepts, explanations, and step-by-step learning path |
+| Practice Quiz | Multiple-choice questions with instant feedback |
+| Resource Links | Clickable links to Khan Academy, Coursera, YouTube, etc. |
+| History | Browse past analyses saved locally |
+| Profile | Account settings and profile management via Clerk |
+| Dark Mode | Light / dark theme toggle |
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 19, Vite, Tailwind CSS |
-| Backend | FastAPI (Python), deployed as Vercel serverless function |
-| AI | OpenAI GPT-4o (vision + structured output) |
-| Auth | [Clerk](https://clerk.com) (JWT verification via JWKS) |
-| Hosting | [Vercel](https://vercel.com) |
+- **Frontend:** React 19 + Vite + Tailwind CSS
+- **Backend:** FastAPI (Python) on Vercel Serverless Functions
+- **AI:** OpenAI GPT-4o (vision + structured output)
+- **Auth:** [Clerk](https://clerk.com) (JWT / JWKS verification)
+- **Hosting:** [Vercel](https://vercel.com)
 
 ## Project Structure
 
 ```
 snaplearn/
 ├── api/
-│   └── index.py          # FastAPI backend (analyze endpoint, Clerk auth)
+│   └── index.py              # FastAPI — auth, image analysis, recommendations
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx        # Landing page, dashboard, auth wrapper
-│   │   ├── api/client.js  # API client
-│   │   ├── components/    # ImageUpload, ResultsDisplay, Settings, etc.
-│   │   └── hooks/         # useTheme, useHistory
+│   │   ├── App.jsx           # Landing page + dashboard + Clerk auth
+│   │   ├── api/client.js     # API client (fetch wrapper)
+│   │   ├── components/
+│   │   │   ├── ImageUpload.jsx
+│   │   │   ├── ResultsDisplay.jsx
+│   │   │   ├── HistorySidebar.jsx
+│   │   │   ├── LoadingState.jsx
+│   │   │   └── Settings.jsx
+│   │   └── hooks/
+│   │       ├── useTheme.js
+│   │       └── useHistory.js
 │   ├── index.html
 │   └── package.json
-├── requirements.txt       # Python dependencies
-├── vercel.json            # Vercel deployment config
+├── requirements.txt          # Python deps (fastapi, openai, pyjwt, etc.)
+├── vercel.json               # Vercel routing & build config
 └── README.md
 ```
 
@@ -51,57 +59,62 @@ snaplearn/
 
 - Node.js 18+
 - Python 3.12+
-- OpenAI API key
-- Clerk account (for authentication)
+- [OpenAI API key](https://platform.openai.com/api-keys)
+- [Clerk](https://clerk.com) account
 
-### Local Development
-
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/MichaelWeng-Git/snaplearn.git
-   cd snaplearn
-   ```
-
-2. **Install frontend dependencies**
-   ```bash
-   cd frontend
-   npm install
-   ```
-
-3. **Set up environment variables**
-
-   Create `frontend/.env.local`:
-   ```
-   VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-   ```
-
-   Set backend env vars (or add to Vercel dashboard):
-   ```
-   OPENAI_API_KEY=your_openai_api_key
-   CLERK_ISSUER=https://your-clerk-instance.clerk.accounts.dev
-   ```
-
-4. **Run the frontend**
-   ```bash
-   npm run dev
-   ```
-
-### Deploy to Vercel
+### 1. Clone & Install
 
 ```bash
-npm install -g vercel
+git clone https://github.com/MichaelWeng-Git/snaplearn.git
+cd snaplearn/frontend
+npm install
+```
+
+### 2. Environment Variables
+
+**Frontend** — create `frontend/.env.local`:
+
+```
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+```
+
+**Backend** — set in Vercel dashboard (or local `.env`):
+
+```
+OPENAI_API_KEY=sk-...
+CLERK_ISSUER=https://your-instance.clerk.accounts.dev
+```
+
+### 3. Run Locally
+
+```bash
+cd frontend
+npm run dev
+```
+
+### 4. Deploy
+
+```bash
 vercel --prod
 ```
 
-Make sure to add `OPENAI_API_KEY`, `CLERK_ISSUER`, and `VITE_CLERK_PUBLISHABLE_KEY` as environment variables in the Vercel dashboard.
-
 ## How It Works
 
-1. User uploads a photo of a homework/exam question
-2. Backend sends the image to GPT-4o Vision, which extracts text and classifies the content
-3. A second GPT-4o call generates study recommendations, practice questions, and resource links
-4. Results are displayed with interactive multiple-choice exercises
+```
+Photo  →  GPT-4o Vision  →  Text + Classification  →  GPT-4o Tutor  →  Study Plan
+                                (subject, topic,         (concepts, quiz,
+                                 grade level)              resources, path)
+```
+
+1. User uploads a homework/exam photo
+2. GPT-4o Vision extracts text, identifies subject, topic, and grade level
+3. A second GPT-4o call generates study recommendations with practice questions
+4. Results are displayed with interactive multiple-choice exercises and resource links
 
 ## License
 
 MIT
+
+---
+
+Built with OpenAI GPT-4o and Clerk.
