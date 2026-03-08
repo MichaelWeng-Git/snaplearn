@@ -259,24 +259,46 @@ function Dashboard() {
                 <div>
                   {showUpload && history.length > 0 && (
                     <div className="text-center mb-4">
-                      <button onClick={() => setShowUpload(false)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer">&larr; Back to dashboard</button>
+                      <button onClick={() => setShowUpload(false)} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                        Back to dashboard
+                      </button>
                     </div>
                   )}
                   <ImageUpload onSubmit={handleSubmit} />
                 </div>
               )
             )}
-            {state === 'loading' && <LoadingState />}
+            {state === 'loading' && (
+              <div>
+                {history.length > 0 && (
+                  <div className="text-center mb-4">
+                    <button onClick={handleReset} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer">&larr; Back to dashboard</button>
+                  </div>
+                )}
+                <LoadingState />
+              </div>
+            )}
             {state === 'error' && (
               <div className="text-center py-12 space-y-4">
                 <p className="text-red-600 dark:text-red-400 font-medium">{error}</p>
-                <button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Try again</button>
+                <div className="flex justify-center gap-3">
+                  {history.length > 0 && (
+                    <button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">Back to dashboard</button>
+                  )}
+                  <button onClick={() => { setState('idle'); setShowUpload(true); setError(null); }} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">Try again</button>
+                </div>
               </div>
             )}
             {state === 'results' && displayData && (
               <div className="space-y-6">
                 <ResultsDisplay data={displayData} />
-                <div className="text-center pt-4 pb-8"><button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Analyze another question</button></div>
+                <div className="text-center pt-4 pb-8 flex justify-center gap-3">
+                  {history.length > 0 && (
+                    <button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">Back to dashboard</button>
+                  )}
+                  <button onClick={() => { setState('idle'); setResults(null); setShowUpload(true); }} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">Analyze another question</button>
+                </div>
               </div>
             )}
           </>

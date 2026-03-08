@@ -4,6 +4,16 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [1.8.1] - 2025-03-08
+
+### Added
+- **Back to dashboard button** — visible on upload page, loading state, error state, and results page so users can always return to the main dashboard
+- Styled back button with arrow icon on upload page for better visibility
+- "Back to dashboard" + "Try again" buttons on error page
+- "Back to dashboard" + "Analyze another question" buttons on results page
+
+---
+
 ## [1.8.0] - 2025-03-08
 
 ### Changed
