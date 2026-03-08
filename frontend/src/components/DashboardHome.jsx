@@ -166,7 +166,7 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
       {/* Analyze New Question */}
       <button
         onClick={onUploadClick}
-        className="w-full bg-white dark:bg-gray-800 rounded-2xl p-6 cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all duration-200 group"
+        className="w-full bg-white dark:bg-gray-800 rounded-2xl p-6 cursor-pointer border-2 border-dashed border-gray-300 dark:border-white/30 hover:border-blue-400 dark:hover:border-white/60 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all duration-200 group"
       >
         <div className="flex flex-col items-center gap-3 py-2">
           <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center group-hover:scale-110 transition-transform">
