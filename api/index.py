@@ -72,6 +72,22 @@ class AnalyzeResponse(BaseModel):
     common_mistakes: list[str]
 
 
+class TopicSummary(BaseModel):
+    subject: str
+    topic: str
+    subtopic: str
+    difficulty_level: str
+
+
+class RecommendRequest(BaseModel):
+    topics: list[TopicSummary]
+
+
+class RecommendResponse(BaseModel):
+    exercises: list[PracticeExercise]
+    summary: str
+
+
 # --- Auth helper ---
 
 
@@ -244,3 +260,56 @@ async def analyze(file: UploadFile, user: dict = Depends(verify_token)):
         raise HTTPException(status_code=502, detail=f"OpenAI recommendation generation failed: {type(e).__name__}: {e}")
 
     return AnalyzeResponse(**analysis.model_dump(), **recommendations.model_dump())
+
+
+@app.post("/api/recommend")
+async def recommend(body: RecommendRequest, user: dict = Depends(verify_token)):
+    from openai import AsyncOpenAI
+
+    if not body.topics:
+        raise HTTPException(status_code=400, detail="No study history to generate recommendations from.")
+
+    seen = set()
+    unique_topics = []
+    for t in body.topics:
+        key = (t.subject, t.topic, t.subtopic)
+        if key not in seen:
+            seen.add(key)
+            unique_topics.append(t)
+        if len(unique_topics) >= 10:
+            break
+
+    topic_lines = "\n".join(
+        f"- {t.subject} > {t.topic} > {t.subtopic} ({t.difficulty_level})"
+        for t in unique_topics
+    )
+
+    client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"], timeout=30.0)
+
+    try:
+        completion = await client.beta.chat.completions.parse(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an expert tutor. Given a list of topics a student has recently studied, "
+                        "generate 5 new practice multiple-choice questions that span their studied areas. "
+                        "Questions should reinforce learning and test understanding across the topics. "
+                        "Each question must have exactly 4 options, a correct_answer "
+                        "(the full text of the correct option), and an explanation. "
+                        "Also provide a short 1-sentence 'summary' describing what the questions cover. "
+                        "Make questions diverse - cover different topics from the list rather than "
+                        "focusing on just one."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": f"Here are the topics I've been studying:\n{topic_lines}",
+                },
+            ],
+            response_format=RecommendResponse,
+        )
+        return completion.choices[0].message.parsed
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Recommendation generation failed: {type(e).__name__}: {e}")

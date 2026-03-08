@@ -9,7 +9,7 @@ function Section({ title, children }) {
   );
 }
 
-function ExerciseCard({ exercise, index }) {
+export function ExerciseCard({ exercise, index }) {
   const [selected, setSelected] = useState(null);
   const isCorrect = selected === exercise.correct_answer;
   const answered = selected !== null;

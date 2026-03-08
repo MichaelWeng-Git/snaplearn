@@ -5,6 +5,7 @@ import LoadingState from './components/LoadingState';
 import ResultsDisplay from './components/ResultsDisplay';
 import Settings from './components/Settings';
 import HistorySidebar from './components/HistorySidebar';
+import DashboardHome from './components/DashboardHome';
 import { analyzeImage } from './api/client';
 import useTheme from './hooks/useTheme';
 import useHistory from './hooks/useHistory';
@@ -192,6 +193,7 @@ function Dashboard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   const [viewingHistoryItem, setViewingHistoryItem] = useState(null);
 
   const { theme, toggleTheme } = useTheme();
@@ -214,7 +216,7 @@ function Dashboard() {
     }
   }
 
-  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); }
+  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); setShowUpload(false); }
   function handleSelectHistory(entry) { setViewingHistoryItem(entry); setResults(null); setState('idle'); setHistoryOpen(false); }
 
   const displayData = viewingHistoryItem || results;
@@ -250,7 +252,20 @@ function Dashboard() {
           </div>
         ) : (
           <>
-            {state === 'idle' && <ImageUpload onSubmit={handleSubmit} />}
+            {state === 'idle' && (
+              history.length > 0 && !showUpload ? (
+                <DashboardHome history={history} getToken={getToken} onUploadClick={() => setShowUpload(true)} />
+              ) : (
+                <div>
+                  {showUpload && history.length > 0 && (
+                    <div className="text-center mb-4">
+                      <button onClick={() => setShowUpload(false)} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer">&larr; Back to dashboard</button>
+                    </div>
+                  )}
+                  <ImageUpload onSubmit={handleSubmit} />
+                </div>
+              )
+            )}
             {state === 'loading' && <LoadingState />}
             {state === 'error' && (
               <div className="text-center py-12 space-y-4">

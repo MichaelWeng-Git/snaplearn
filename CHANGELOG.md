@@ -4,6 +4,24 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [1.7.0] - 2025-03-08
+
+### Added
+- **Dashboard Home** — when user has study history, the dashboard now shows a personalized home view instead of just the upload box
+- **Study stats** — displays total questions analyzed and unique topics covered, with subject badges
+- **AI-recommended practice questions** — new `POST /api/recommend` endpoint uses GPT-4o-mini to generate 5 multiple-choice questions based on the user's study history
+- **Refresh button** — regenerate new recommended questions on demand
+- **Upload CTA** — prominent "Analyze a new question" card with upload button; "Back to dashboard" link when in upload view
+
+### Changed
+- Dashboard idle state now conditionally renders `DashboardHome` (when history exists) or `ImageUpload` (when no history or user clicks upload)
+- Exported `ExerciseCard` from `ResultsDisplay.jsx` for reuse in `DashboardHome`
+
+### New Files
+- `frontend/src/components/DashboardHome.jsx`
+
+---
+
 ## [1.6.0] - 2025-03-08
 
 ### Changed
