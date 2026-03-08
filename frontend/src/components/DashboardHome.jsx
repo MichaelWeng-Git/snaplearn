@@ -271,16 +271,17 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
       {/* Daily Practice Launch Card */}
       <button
         onClick={onStartPractice}
-        className="w-full text-left bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 cursor-pointer hover:from-indigo-700 hover:to-purple-700 transition-all group"
+        className="w-full text-left bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-indigo-500/25 hover:scale-[1.01] transition-all duration-200 group"
       >
         <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold text-white mb-1">Daily Practice</h3>
-            <p className="text-indigo-100 text-sm">5 questions &middot; Earn XP &middot; Track your streak!</p>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">&#x26A1;</span>
+            <div>
+              <h3 className="text-base font-semibold text-white">Daily Practice</h3>
+              <p className="text-white/70 text-xs mt-0.5">5 questions</p>
+            </div>
           </div>
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors shrink-0">
-            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-          </div>
+          <svg className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </div>
       </button>
 
