@@ -7,7 +7,7 @@ All notable changes to SnapLearn are documented in this file.
 ## [1.8.3] - 2025-03-08
 
 ### Changed
-- **SnapLearn header is now clickable** — clicking the title/logo in the header from any page takes you back to the dashboard home
+- **Back arrow in header** — a left-arrow button appears in the header next to the title when not on the dashboard home (upload, loading, results, history view), clicking it returns to the dashboard
 
 ---
 
