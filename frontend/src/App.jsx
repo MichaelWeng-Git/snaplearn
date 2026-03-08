@@ -225,10 +225,10 @@ function Dashboard() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
+          <button onClick={handleReset} className="text-left cursor-pointer">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">SnapLearn</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">Upload a homework or exam question to get personalized study recommendations</p>
-          </div>
+          </button>
           <div className="flex items-center gap-2">
             <button onClick={() => setHistoryOpen(true)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" title="History">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>

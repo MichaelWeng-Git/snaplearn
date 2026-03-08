@@ -4,6 +4,13 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [1.8.3] - 2025-03-08
+
+### Changed
+- **SnapLearn header is now clickable** — clicking the title/logo in the header from any page takes you back to the dashboard home
+
+---
+
 ## [1.8.2] - 2025-03-08
 
 ### Added
