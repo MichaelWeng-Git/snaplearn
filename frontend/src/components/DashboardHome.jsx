@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ExerciseCard } from './ResultsDisplay';
 import { getRecommendations } from '../api/client';
 
@@ -128,6 +128,115 @@ function DailyGoalCard({ todayCount, goal, onChangeGoal }) {
       </div>
       {done && <p className="text-xs text-green-600 dark:text-green-400 mt-2 font-medium">Goal reached! Great work today!</p>}
       {!done && todayCount > 0 && <p className="text-xs text-gray-400 mt-2">{goal - todayCount} more to reach your goal</p>}
+    </div>
+  );
+}
+
+function DailyPractice({ history, getToken }) {
+  const [exercises, setExercises] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [score, setScore] = useState(0);
+  const [answered, setAnswered] = useState(0);
+
+  async function loadPractice() {
+    setLoading(true);
+    setError(null);
+    setExercises(null);
+    setScore(0);
+    setAnswered(0);
+    try {
+      const token = await getToken();
+      const topics = history.map(e => ({
+        subject: e.subject,
+        topic: e.topic,
+        subtopic: e.subtopic,
+        difficulty_level: e.difficulty_level,
+      }));
+      const data = await getRecommendations(topics, token);
+      setExercises(data.exercises || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadPractice();
+  }, []);
+
+  function handleAnswer(isCorrect) {
+    setAnswered(a => a + 1);
+    if (isCorrect) setScore(s => s + 1);
+  }
+
+  const total = exercises?.length || 0;
+  const allDone = total > 0 && answered === total;
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Daily Practice</h3>
+        </div>
+        <button
+          onClick={loadPractice}
+          disabled={loading}
+          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium disabled:opacity-50 cursor-pointer"
+        >
+          {loading ? 'Loading...' : 'New Questions'}
+        </button>
+      </div>
+
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Practice questions based on everything you've studied</p>
+
+      {/* Score bar */}
+      {exercises && answered > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+          <div className="flex-1">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+              <span>Progress</span>
+              <span>{answered} / {total}</span>
+            </div>
+            <div className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-full overflow-hidden">
+              <div className="h-full bg-indigo-600 rounded-full transition-all duration-300" style={{ width: `${(answered / total) * 100}%` }} />
+            </div>
+          </div>
+          <div className="text-center px-3 border-l border-gray-200 dark:border-gray-600">
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{score}/{answered}</p>
+            <p className="text-xs text-gray-400">correct</p>
+          </div>
+        </div>
+      )}
+
+      {allDone && (
+        <div className={`mb-4 p-3 rounded-lg text-center text-sm font-medium ${score === total ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' : score >= total / 2 ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'}`}>
+          {score === total ? 'Perfect score! You nailed it!' : score >= total / 2 ? `Nice work! ${score} out of ${total} correct.` : `${score} out of ${total}. Keep practicing!`}
+        </div>
+      )}
+
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <div className="h-8 w-8 border-4 border-indigo-200 dark:border-indigo-800 border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center py-6">
+          <p className="text-sm text-red-600 dark:text-red-400 mb-3">{error}</p>
+          <button onClick={loadPractice} className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium cursor-pointer">Try again</button>
+        </div>
+      )}
+
+      {exercises && (
+        <div className="space-y-3">
+          {exercises.map((exercise, i) => (
+            <ExerciseCard key={i} exercise={exercise} index={i} onAnswer={handleAnswer} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -269,6 +378,9 @@ export default function DashboardHome({ history, getToken, onUploadClick }) {
           </span>
         ))}
       </div>
+
+      {/* Daily Practice */}
+      <DailyPractice history={history} getToken={getToken} />
 
       {/* Your Questions */}
       <div>

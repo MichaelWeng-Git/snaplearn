@@ -9,10 +9,16 @@ function Section({ title, children }) {
   );
 }
 
-export function ExerciseCard({ exercise, index }) {
+export function ExerciseCard({ exercise, index, onAnswer }) {
   const [selected, setSelected] = useState(null);
   const isCorrect = selected === exercise.correct_answer;
   const answered = selected !== null;
+
+  function handleSelect(option) {
+    if (answered) return;
+    setSelected(option);
+    if (onAnswer) onAnswer(option === exercise.correct_answer);
+  }
 
   return (
     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
@@ -37,7 +43,7 @@ export function ExerciseCard({ exercise, index }) {
           return (
             <button
               key={i}
-              onClick={() => !answered && setSelected(option)}
+              onClick={() => handleSelect(option)}
               disabled={answered}
               className={`w-full text-left px-4 py-2.5 rounded-lg border-2 transition-colors ${bg}`}
             >

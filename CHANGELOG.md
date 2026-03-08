@@ -4,6 +4,19 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.0.0] - 2025-03-08
+
+### Added
+- **Daily Practice** — auto-generated practice section on the dashboard between Study Stats and Your Questions; generates multiple-choice questions based on the user's entire study history using GPT-4o-mini
+- Score tracking with progress bar (answered/total) and correct count
+- Result messages on completion: Perfect score / Nice work / Keep practicing
+- "New Questions" button to regenerate fresh daily practice
+
+### Changed
+- `ExerciseCard` now accepts optional `onAnswer(isCorrect)` callback for external score tracking
+
+---
+
 ## [1.9.0] - 2025-03-08
 
 ### Added
