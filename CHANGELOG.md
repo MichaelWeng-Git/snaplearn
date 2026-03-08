@@ -4,6 +4,25 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.1.0] - 2026-03-08
+
+### Added
+- **Duolingo-style Daily Practice page** — full dedicated page with one question at a time, animated transitions, and gamified experience
+- Hearts system: 3 hearts, lose one per wrong answer, game over at 0
+- XP system: +20 per correct answer, +50 completion bonus, +100 perfect bonus
+- Animated feedback banners (green/red slide-up) with auto-advance after 1.5s
+- Progress bar and live XP counter during practice
+- Celebration completion screen with trophy/star, score, XP earned, hearts left, accuracy %
+- "Continue" and "Practice Again" buttons on completion
+- CSS keyframe animations: slideUp, slideInRight, bounceIn, correctPulse, incorrectShake, xpFloat
+
+### Changed
+- Daily Practice on dashboard replaced with gradient launch card ("Daily Practice — 5 questions, Earn XP!")
+- Practice now opens as a full page instead of inline on the dashboard
+- Back arrow in header works during practice to return to dashboard
+
+---
+
 ## [2.0.0] - 2025-03-08
 
 ### Added
