@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ExerciseCard } from './ResultsDisplay';
 import { getRecommendations } from '../api/client';
 
@@ -16,36 +16,104 @@ function getStudyStats(history) {
   };
 }
 
-export default function DashboardHome({ history, getToken, onUploadClick }) {
-  const [recommendations, setRecommendations] = useState(null);
-  const [recLoading, setRecLoading] = useState(false);
-  const [recError, setRecError] = useState(null);
+function QuestionCard({ entry, getToken }) {
+  const [exercises, setExercises] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [expanded, setExpanded] = useState(false);
 
-  const stats = getStudyStats(history);
-
-  async function loadRecommendations() {
-    setRecLoading(true);
-    setRecError(null);
+  async function generatePractice() {
+    setLoading(true);
+    setError(null);
+    setExpanded(true);
     try {
       const token = await getToken();
-      const topics = history.map(e => ({
-        subject: e.subject,
-        topic: e.topic,
-        subtopic: e.subtopic,
-        difficulty_level: e.difficulty_level,
-      }));
-      const data = await getRecommendations(topics, token);
-      setRecommendations(data);
+      const data = await getRecommendations(
+        [{ subject: entry.subject, topic: entry.topic, subtopic: entry.subtopic, difficulty_level: entry.difficulty_level }],
+        token
+      );
+      setExercises(data.exercises);
     } catch (err) {
-      setRecError(err.message);
+      setError(err.message);
     } finally {
-      setRecLoading(false);
+      setLoading(false);
     }
   }
 
-  useEffect(() => {
-    loadRecommendations();
-  }, []);
+  const timeAgo = (ts) => {
+    const diff = Date.now() - new Date(ts).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(ts).toLocaleDateString();
+  };
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">{entry.subject}</span>
+              <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-xs font-medium">{entry.topic}</span>
+              {entry.subtopic && (
+                <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-xs font-medium">{entry.subtopic}</span>
+              )}
+              <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-xs">{entry.difficulty_level}</span>
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2 leading-relaxed">{entry.extracted_text}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">{timeAgo(entry.timestamp)}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={generatePractice}
+            disabled={loading}
+            className="px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? 'Generating...' : exercises ? 'New Questions' : 'Generate Practice'}
+          </button>
+          {exercises && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="px-3 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer"
+            >
+              {expanded ? 'Hide' : 'Show'} Questions
+            </button>
+          )}
+        </div>
+      </div>
+
+      {expanded && loading && (
+        <div className="border-t border-gray-100 dark:border-gray-700 p-6 flex items-center justify-center">
+          <div className="h-6 w-6 border-3 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {expanded && error && (
+        <div className="border-t border-gray-100 dark:border-gray-700 p-4">
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        </div>
+      )}
+
+      {expanded && exercises && (
+        <div className="border-t border-gray-100 dark:border-gray-700 p-4 space-y-3">
+          {exercises.map((exercise, i) => (
+            <ExerciseCard key={i} exercise={exercise} index={i} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function DashboardHome({ history, getToken, onUploadClick }) {
+  const stats = getStudyStats(history);
 
   return (
     <div className="space-y-6">
@@ -70,45 +138,14 @@ export default function DashboardHome({ history, getToken, onUploadClick }) {
         ))}
       </div>
 
-      {/* Recommended Practice */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Recommended Practice</h3>
-          <button
-            onClick={loadRecommendations}
-            disabled={recLoading}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium disabled:opacity-50 cursor-pointer"
-          >
-            {recLoading ? 'Loading...' : 'Refresh'}
-          </button>
+      {/* Your Questions */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Your Questions</h3>
+        <div className="space-y-3">
+          {history.map((entry) => (
+            <QuestionCard key={entry.id} entry={entry} getToken={getToken} />
+          ))}
         </div>
-
-        {recommendations?.summary && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{recommendations.summary}</p>
-        )}
-
-        {recLoading && !recommendations && (
-          <div className="flex items-center justify-center py-8">
-            <div className="h-8 w-8 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin" />
-          </div>
-        )}
-
-        {recError && !recommendations && (
-          <div className="text-center py-6">
-            <p className="text-sm text-red-600 dark:text-red-400 mb-3">{recError}</p>
-            <button onClick={loadRecommendations} className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 font-medium cursor-pointer">
-              Try again
-            </button>
-          </div>
-        )}
-
-        {recommendations?.exercises && (
-          <div className="space-y-3">
-            {recommendations.exercises.map((exercise, i) => (
-              <ExerciseCard key={i} exercise={exercise} index={i} />
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Upload CTA */}
