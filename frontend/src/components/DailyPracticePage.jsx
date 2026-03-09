@@ -1,5 +1,97 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getRecommendations } from '../api/client';
+
+/* ─── Sound effects (Web Audio API) ─── */
+
+function playCorrectSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    // Pleasant ascending chime (C5 → E5 → G5)
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.15, now + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + i * 0.08);
+      osc.stop(now + i * 0.08 + 0.4);
+    });
+  } catch (e) { /* audio not supported */ }
+}
+
+function playIncorrectSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    // Low descending buzz
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(120, now + 0.3);
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.35);
+  } catch (e) { /* audio not supported */ }
+}
+
+/* ─── Confetti burst component ─── */
+
+const CONFETTI_COLORS = ['#22c55e', '#eab308', '#3b82f6', '#ec4899', '#f97316', '#8b5cf6', '#14b8a6', '#f43f5e'];
+
+function ConfettiBurst({ originY }) {
+  const particles = Array.from({ length: 40 }, (_, i) => {
+    const angle = (i / 40) * 360 + (Math.random() - 0.5) * 20;
+    const dist = 60 + Math.random() * 160;
+    const rad = (angle * Math.PI) / 180;
+    const x = Math.cos(rad) * dist;
+    const y = Math.sin(rad) * dist - 40; // bias upward
+    const size = 5 + Math.random() * 7;
+    const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    const rotation = Math.random() * 720 - 360;
+    const delay = Math.random() * 0.15;
+    const w = Math.random() > 0.5 ? size : size * 2.5;
+    return { x, y, w, h: size, color, rotation, delay };
+  });
+
+  return (
+    <div className="confetti-container">
+      {/* Center glow */}
+      <div
+        className="confetti-glow"
+        style={{
+          left: '50%', top: `${originY}px`,
+          transform: 'translate(-50%, -50%)',
+          width: 120, height: 120,
+          background: 'radial-gradient(circle, rgba(34,197,94,0.4) 0%, transparent 70%)',
+        }}
+      />
+      {/* Particles */}
+      {particles.map((p, i) => (
+        <div
+          key={i}
+          className="confetti-particle"
+          style={{
+            left: '50%', top: `${originY}px`,
+            width: p.w, height: p.h,
+            backgroundColor: p.color,
+            '--cx': `${p.x}px`,
+            '--cy': `${p.y}px`,
+            '--cr': `${p.rotation}deg`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function DailyPracticePage({ history, getToken, onClose }) {
   const [phase, setPhase] = useState('loading'); // loading | playing | complete | error
@@ -12,6 +104,8 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
   const [feedback, setFeedback] = useState(null); // null | 'correct' | 'incorrect'
   const [error, setError] = useState(null);
   const [showXpFloat, setShowXpFloat] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiOriginY, setConfettiOriginY] = useState(300);
 
   async function loadPractice() {
     setPhase('loading');
@@ -59,8 +153,14 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
       setXp(x => x + 20);
       setShowXpFloat(true);
       setTimeout(() => setShowXpFloat(false), 1000);
+      // Sound + confetti
+      playCorrectSound();
+      setConfettiOriginY(Math.min(window.innerHeight * 0.45, 350));
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1000);
     } else {
       setFeedback('incorrect');
+      playIncorrectSound();
       const newHearts = hearts - 1;
       setHearts(newHearts);
       if (newHearts <= 0) {
@@ -280,6 +380,9 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
           )}
         </div>
       )}
+
+      {/* Confetti explosion */}
+      {showConfetti && <ConfettiBurst originY={confettiOriginY} />}
     </div>
   );
 }

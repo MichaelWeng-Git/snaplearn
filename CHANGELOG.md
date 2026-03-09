@@ -4,6 +4,18 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.3.0] - 2026-03-09
+
+### Added
+- **Daily Practice sound effects** — ascending chime on correct answers, descending buzz on incorrect (Web Audio API, no external files)
+- **Confetti explosion** — Duolingo-style confetti burst with 40 particles and glow effect on correct answers
+- CSS keyframe animations: confettiBurst, confettiGlow
+
+### Changed
+- **Consistent unit cover styling** — all Lessons page unit covers now use the subject's own gradient color instead of cycling through random palettes
+
+---
+
 ## [2.2.0] - 2026-03-09
 
 ### Added

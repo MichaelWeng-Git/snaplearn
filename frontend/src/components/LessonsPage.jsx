@@ -661,16 +661,6 @@ const SUBJECTS = {
   },
 };
 
-/* ─── Unit cover color palette (cycles per unit index) ─── */
-const UNIT_PALETTES = [
-  'from-blue-500/90 to-indigo-600/90',
-  'from-emerald-500/90 to-teal-600/90',
-  'from-amber-500/90 to-orange-600/90',
-  'from-violet-500/90 to-purple-600/90',
-  'from-rose-500/90 to-pink-600/90',
-  'from-cyan-500/90 to-sky-600/90',
-];
-
 /* ─── Helpers ─── */
 
 function countVideos(subj) {
@@ -790,7 +780,7 @@ export default function LessonsPage({ history, onClose }) {
         {units.map((u, ui) => (
           <div key={u.unit} className="space-y-2">
             {/* ── Unit cover card ── */}
-            <div className={`relative rounded-2xl bg-gradient-to-r ${UNIT_PALETTES[ui % UNIT_PALETTES.length]} p-5 overflow-hidden`}>
+            <div className={`relative rounded-2xl bg-gradient-to-r ${subj.color} p-5 overflow-hidden`}>
               <div className="absolute top-3 right-4 text-white/15 text-6xl font-black select-none leading-none">
                 {ui + 1}
               </div>
