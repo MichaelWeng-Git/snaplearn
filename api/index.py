@@ -49,6 +49,7 @@ class Resource(BaseModel):
 
 
 class StudyRecommendation(BaseModel):
+    solution: str
     key_concepts: list[str]
     explanation: str
     recommended_resources: list[Resource]
@@ -64,6 +65,7 @@ class AnalyzeResponse(BaseModel):
     subtopic: str
     difficulty_level: str
     confidence: float
+    solution: str
     key_concepts: list[str]
     explanation: str
     recommended_resources: list[Resource]
@@ -230,6 +232,8 @@ async def analyze(file: UploadFile, user: dict = Depends(verify_token)):
                         "Given information about a homework or exam question, generate comprehensive, "
                         "actionable study recommendations.\n\n"
                         "Provide:\n"
+                        "- solution: if the extracted text contains a specific question or problem, provide the correct answer "
+                        "with a clear step-by-step solution. If it is general study material with no specific question, set this to an empty string.\n"
                         "- key_concepts: the core concepts the student needs to understand\n"
                         "- explanation: a clear, concise explanation of the topic at the appropriate difficulty level\n"
                         "- recommended_resources: each resource must have a 'name' (descriptive title) and 'url' (a real, working link). "

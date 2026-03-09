@@ -76,6 +76,13 @@ export default function ResultsDisplay({ data }) {
         <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">{data.difficulty_level}</span>
       </div>
 
+      {/* Solution */}
+      {data.solution && (
+        <Section title="Answer">
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{data.solution}</p>
+        </Section>
+      )}
+
       {/* Key Concepts */}
       <Section title="Key Concepts">
         <ul className="space-y-1">
