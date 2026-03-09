@@ -7,6 +7,7 @@ import Settings from './components/Settings';
 import HistorySidebar from './components/HistorySidebar';
 import DashboardHome from './components/DashboardHome';
 import DailyPracticePage from './components/DailyPracticePage';
+import LessonsPage from './components/LessonsPage';
 import { analyzeImage } from './api/client';
 import useTheme from './hooks/useTheme';
 import useHistory from './hooks/useHistory';
@@ -197,6 +198,7 @@ function Dashboard() {
   const [showUpload, setShowUpload] = useState(false);
   const [viewingHistoryItem, setViewingHistoryItem] = useState(null);
   const [showDailyPractice, setShowDailyPractice] = useState(false);
+  const [showLessons, setShowLessons] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
   const { history, addEntry, deleteEntry, clearHistory } = useHistory();
@@ -218,7 +220,7 @@ function Dashboard() {
     }
   }
 
-  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); setShowUpload(false); setShowDailyPractice(false); }
+  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); setShowUpload(false); setShowDailyPractice(false); setShowLessons(false); }
   function handleSelectHistory(entry) { setViewingHistoryItem(entry); setResults(null); setState('idle'); setHistoryOpen(false); }
 
   const displayData = viewingHistoryItem || results;
@@ -228,7 +230,7 @@ function Dashboard() {
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {(state !== 'idle' || showUpload || viewingHistoryItem || showDailyPractice) && history.length > 0 && (
+            {(state !== 'idle' || showUpload || viewingHistoryItem || showDailyPractice || showLessons) && history.length > 0 && (
               <button onClick={handleReset} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" title="Back to dashboard">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
               </button>
@@ -267,12 +269,15 @@ function Dashboard() {
           </div>
         ) : (
           <>
-            {state === 'idle' && showDailyPractice && (
+            {state === 'idle' && showLessons && (
+              <LessonsPage history={history} onClose={() => setShowLessons(false)} />
+            )}
+            {state === 'idle' && showDailyPractice && !showLessons && (
               <DailyPracticePage history={history} getToken={getToken} onClose={() => setShowDailyPractice(false)} />
             )}
-            {state === 'idle' && !showDailyPractice && (
+            {state === 'idle' && !showDailyPractice && !showLessons && (
               history.length > 0 && !showUpload ? (
-                <DashboardHome history={history} getToken={getToken} onUploadClick={() => setShowUpload(true)} onStartPractice={() => setShowDailyPractice(true)} />
+                <DashboardHome history={history} getToken={getToken} onUploadClick={() => setShowUpload(true)} onStartPractice={() => setShowDailyPractice(true)} onStartLessons={() => setShowLessons(true)} />
               ) : (
                 <div>
                   {showUpload && history.length > 0 && (

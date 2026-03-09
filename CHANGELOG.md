@@ -4,6 +4,19 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.2.0] - 2026-03-09
+
+### Added
+- **Video Lessons page** — browse curated YouTube lessons organized by grade level and subject
+- Grade level tabs: Elementary (K-5), Middle School (6-8), High School (9-12), College/AP
+- 15+ subjects across all grade levels: Math, Science, Physics, Chemistry, Biology, Computer Science, Economics, History, Psychology, English, Spanish, Art & Music, and more
+- Embedded YouTube player with autoplay — click any lesson to watch within the app
+- Subjects from user's study history are highlighted with "From your studies" badge
+- Teal/green gradient "Video Lessons" card on dashboard home
+- Responsive thumbnails with hover play button overlay
+
+---
+
 ## [2.1.0] - 2026-03-08
 
 ### Added

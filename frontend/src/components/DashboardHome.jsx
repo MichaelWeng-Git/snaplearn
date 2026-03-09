@@ -150,7 +150,7 @@ function questionTitle(entry) {
 
 /* ─── Main Dashboard ─── */
 
-export default function DashboardHome({ history, getToken, onUploadClick, onStartPractice }) {
+export default function DashboardHome({ history, getToken, onUploadClick, onStartPractice, onStartLessons }) {
   const stats = getStudyStats(history);
   const streak = getStreak(history);
   const todayCount = getTodayCount(history);
@@ -190,6 +190,23 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
             <div>
               <h3 className="text-base font-semibold text-white">Daily Practice</h3>
               <p className="text-white/70 text-xs mt-0.5">5 questions</p>
+            </div>
+          </div>
+          <svg className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </div>
+      </button>
+
+      {/* Lessons */}
+      <button
+        onClick={onStartLessons}
+        className="w-full text-left bg-gradient-to-br from-teal-500 via-emerald-500 to-green-500 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-teal-500/25 hover:scale-[1.01] transition-all duration-200 group"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">&#x1F3AC;</span>
+            <div>
+              <h3 className="text-base font-semibold text-white">Video Lessons</h3>
+              <p className="text-white/70 text-xs mt-0.5">Browse lessons by subject & grade</p>
             </div>
           </div>
           <svg className="w-5 h-5 text-white/60 group-hover:text-white group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
