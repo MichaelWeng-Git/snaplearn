@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /* ─── Data: subject → { icon, color, grades: { grade → units[] } } ─── */
 
@@ -683,13 +683,21 @@ function thumbnailUrl(videoId) {
 
 /* ─── Component ─── */
 
-export default function LessonsPage({ history, onClose }) {
+export const SUBJECT_NAMES = Object.keys(SUBJECTS);
+
+export default function LessonsPage({ history, onClose, initialSubject }) {
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [selectedGrade, setSelectedGrade] = useState(null);
   const [watching, setWatching] = useState(null);
   const [watchUnit, setWatchUnit] = useState(null);
 
   const historySubjects = [...new Set(history.map(e => e.subject))];
+
+  useEffect(() => {
+    if (initialSubject && SUBJECTS[initialSubject]) {
+      openSubject(initialSubject);
+    }
+  }, [initialSubject]);
 
   function openSubject(name) {
     const subj = SUBJECTS[name];

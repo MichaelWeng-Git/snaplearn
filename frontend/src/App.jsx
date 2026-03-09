@@ -199,6 +199,7 @@ function Dashboard() {
   const [viewingHistoryItem, setViewingHistoryItem] = useState(null);
   const [showDailyPractice, setShowDailyPractice] = useState(false);
   const [showLessons, setShowLessons] = useState(false);
+  const [lessonsSubject, setLessonsSubject] = useState(null);
 
   const { theme, toggleTheme } = useTheme();
   const { history, addEntry, deleteEntry, clearHistory } = useHistory();
@@ -220,7 +221,8 @@ function Dashboard() {
     }
   }
 
-  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); setShowUpload(false); setShowDailyPractice(false); setShowLessons(false); }
+  function handleViewLessons(subject) { setState('idle'); setResults(null); setShowUpload(false); setShowDailyPractice(false); setShowLessons(true); setLessonsSubject(subject); }
+  function handleReset() { setState('idle'); setResults(null); setError(null); setViewingHistoryItem(null); setShowUpload(false); setShowDailyPractice(false); setShowLessons(false); setLessonsSubject(null); }
   function handleSelectHistory(entry) { setViewingHistoryItem(entry); setResults(null); setState('idle'); setHistoryOpen(false); }
 
   const displayData = viewingHistoryItem || results;
@@ -264,13 +266,13 @@ function Dashboard() {
               </button>
               <div><span className="text-xs text-gray-500 dark:text-gray-400">Viewing saved analysis from {new Date(viewingHistoryItem.timestamp).toLocaleString()}</span></div>
             </div>
-            <ResultsDisplay data={viewingHistoryItem} />
+            <ResultsDisplay data={viewingHistoryItem} onViewLessons={handleViewLessons} />
             <div className="text-center pt-4 pb-8"><button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 cursor-pointer">Back to dashboard</button></div>
           </div>
         ) : (
           <>
             {state === 'idle' && showLessons && (
-              <LessonsPage history={history} onClose={() => setShowLessons(false)} />
+              <LessonsPage history={history} onClose={() => { setShowLessons(false); setLessonsSubject(null); }} initialSubject={lessonsSubject} />
             )}
             {state === 'idle' && showDailyPractice && !showLessons && (
               <DailyPracticePage history={history} getToken={getToken} onClose={() => setShowDailyPractice(false)} />
@@ -315,7 +317,7 @@ function Dashboard() {
             )}
             {state === 'results' && displayData && (
               <div className="space-y-6">
-                <ResultsDisplay data={displayData} />
+                <ResultsDisplay data={displayData} onViewLessons={handleViewLessons} />
                 <div className="text-center pt-4 pb-8 flex justify-center gap-3">
                   {history.length > 0 && (
                     <button onClick={handleReset} className="px-6 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer">Back to dashboard</button>

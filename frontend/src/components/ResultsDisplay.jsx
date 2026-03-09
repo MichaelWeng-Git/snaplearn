@@ -1,4 +1,19 @@
 import { useState } from 'react';
+import { SUBJECT_NAMES } from './LessonsPage';
+
+const SUBJECT_ALIASES = {
+  'mathematics': 'Math', 'algebra': 'Math', 'calculus': 'Math', 'geometry': 'Math',
+  'trigonometry': 'Math', 'statistics': 'Math', 'arithmetic': 'Math',
+  'computer science': 'Computer Science', 'programming': 'Computer Science', 'coding': 'Computer Science',
+  'science': 'Biology',
+};
+
+function matchSubject(subject) {
+  if (!subject) return null;
+  const exact = SUBJECT_NAMES.find(s => s.toLowerCase() === subject.toLowerCase());
+  if (exact) return exact;
+  return SUBJECT_ALIASES[subject.toLowerCase()] || null;
+}
 
 function Section({ title, children }) {
   return (
@@ -65,7 +80,9 @@ export function ExerciseCard({ exercise, index, onAnswer }) {
   );
 }
 
-export default function ResultsDisplay({ data }) {
+export default function ResultsDisplay({ data, onViewLessons }) {
+  const matchedSubject = matchSubject(data.subject);
+
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       {/* Subject / Topic Badge */}
@@ -75,6 +92,23 @@ export default function ResultsDisplay({ data }) {
         <span className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm font-medium">{data.subtopic}</span>
         <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">{data.difficulty_level}</span>
       </div>
+
+      {/* Video Lessons Recommendation */}
+      {matchedSubject && onViewLessons && (
+        <button
+          onClick={() => onViewLessons(matchedSubject)}
+          className="w-full p-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg hover:from-teal-600 hover:to-emerald-700 transition-all cursor-pointer flex items-center gap-3"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+          </div>
+          <div className="text-left">
+            <p className="font-semibold">Watch video lessons on {matchedSubject}</p>
+            <p className="text-sm text-teal-100">Browse curated lessons and tutorials</p>
+          </div>
+          <svg className="w-5 h-5 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
+      )}
 
       {/* Solution */}
       {data.solution && (
