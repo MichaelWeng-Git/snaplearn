@@ -4,6 +4,14 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.4.1] - 2026-03-10
+
+### Fixed
+- **Fraction answer matching** — practice exercise answers with fraction characters (½, ¼, ¾, etc.) now correctly match their text equivalents (1/2, 1/4, 3/4)
+- **Show correct answer on wrong pick** — when the user answers incorrectly, the correct answer is now displayed in the feedback area (both ResultsDisplay and Daily Practice)
+
+---
+
 ## [2.4.0] - 2026-03-10
 
 ### Added
