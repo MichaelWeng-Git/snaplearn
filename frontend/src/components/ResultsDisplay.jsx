@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SUBJECT_NAMES } from './LessonsPage';
+import AiChat from './AiChat';
 
 const SUBJECT_ALIASES = {
   'mathematics': 'Math', 'algebra': 'Math', 'calculus': 'Math', 'geometry': 'Math',
@@ -97,7 +98,7 @@ export function ExerciseCard({ exercise, index, onAnswer }) {
   );
 }
 
-export default function ResultsDisplay({ data, onViewLessons }) {
+export default function ResultsDisplay({ data, onViewLessons, getToken }) {
   const matchedSubject = matchSubject(data.subject);
 
   return (
@@ -206,6 +207,25 @@ export default function ResultsDisplay({ data, onViewLessons }) {
           ))}
         </ul>
       </Section>
+
+      {/* AI Chat */}
+      {getToken && (
+        <AiChat
+          getToken={getToken}
+          title="Ask AI about this problem"
+          placeholder="e.g. Explain step 2 in more detail..."
+          context={[
+            `Subject: ${data.subject}`,
+            `Topic: ${data.topic}`,
+            `Subtopic: ${data.subtopic}`,
+            `Difficulty: ${data.difficulty_level}`,
+            data.extracted_text && `Problem text: ${data.extracted_text}`,
+            data.solution && `Solution: ${data.solution}`,
+            data.explanation && `Explanation: ${data.explanation}`,
+            data.key_concepts?.length && `Key concepts: ${data.key_concepts.join(', ')}`,
+          ].filter(Boolean).join('\n')}
+        />
+      )}
     </div>
   );
 }

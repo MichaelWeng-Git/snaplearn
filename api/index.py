@@ -74,6 +74,16 @@ class AnalyzeResponse(BaseModel):
     common_mistakes: list[str]
 
 
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    context: str = ""
+
+
 class TopicSummary(BaseModel):
     subject: str
     topic: str
@@ -317,3 +327,32 @@ async def recommend(body: RecommendRequest, user: dict = Depends(verify_token)):
         return completion.choices[0].message.parsed
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Recommendation generation failed: {type(e).__name__}: {e}")
+
+
+@app.post("/api/chat")
+async def chat(body: ChatRequest, user: dict = Depends(verify_token)):
+    from openai import AsyncOpenAI
+
+    system_content = (
+        "You are a friendly, expert tutor. Answer clearly and concisely at the "
+        "student's level. Use examples when helpful. If the student asks you to "
+        "generate practice problems, include answers. Keep responses focused and under 300 words."
+    )
+    if body.context:
+        system_content += f"\n\nContext about what the student is studying:\n{body.context}"
+
+    messages = [{"role": "system", "content": system_content}]
+    for m in body.messages:
+        messages.append({"role": m.role, "content": m.content})
+
+    client = AsyncOpenAI(api_key=os.environ["OPENAI_API_KEY"], timeout=30.0)
+
+    try:
+        completion = await client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            max_tokens=1024,
+        )
+        return {"reply": completion.choices[0].message.content}
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Chat failed: {type(e).__name__}: {e}")
