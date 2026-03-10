@@ -4,6 +4,15 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.4.3] - 2026-03-10
+
+### Changed
+- **Auth flow restructured** — ClerkProvider wraps the entire app; returning signed-in users skip the landing page and go straight to Dashboard
+- **Branded Sign In page** — clicking "Start studying smarter" or "Sign in" now shows a polished sign-in page with SnapLearn branding, logo, and back navigation
+- Flow is now: Landing → Sign In → Dashboard (not upload)
+
+---
+
 ## [2.4.2] - 2026-03-10
 
 ### Changed
