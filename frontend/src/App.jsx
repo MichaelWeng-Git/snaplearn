@@ -401,18 +401,22 @@ function AppContent() {
   const { isLoaded, isSignedIn } = useAuth();
   const [showSignIn, setShowSignIn] = useState(false);
 
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+  // Already signed in → Dashboard (show spinner only while checking)
+  if (isLoaded && isSignedIn) return <Dashboard />;
+
+  // User clicked sign in → show sign-in page (spinner while Clerk loads)
+  if (showSignIn) {
+    if (!isLoaded) {
+      return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      );
+    }
+    return <SignInPage onBack={() => setShowSignIn(false)} />;
   }
 
-  if (isSignedIn) return <Dashboard />;
-
-  if (showSignIn) return <SignInPage onBack={() => setShowSignIn(false)} />;
-
+  // Landing page renders instantly — no waiting for Clerk
   return <LandingPage onSignIn={() => setShowSignIn(true)} />;
 }
 
