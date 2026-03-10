@@ -4,6 +4,16 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.4.0] - 2026-03-10
+
+### Added
+- **Analysis → Lessons link** — after analyzing a photo, a teal "Watch video lessons on {subject}" card appears when the detected subject matches an available lesson
+- Subject fuzzy matching (e.g. "Mathematics" → Math, "Algebra" → Math, "Programming" → Computer Science)
+- `initialSubject` prop on LessonsPage auto-opens the matched subject on navigation
+- Exported `SUBJECT_NAMES` from LessonsPage for cross-component subject matching
+
+---
+
 ## [2.3.0] - 2026-03-09
 
 ### Added
