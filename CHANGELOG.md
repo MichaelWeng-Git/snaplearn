@@ -4,6 +4,14 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.4.2] - 2026-03-10
+
+### Changed
+- **Dashboard always visible** — new users now see the full dashboard (streak, daily goal, analyze button, daily practice, video lessons) immediately after sign-in, instead of being dropped into the upload screen
+- "Recent" section only appears when there is history
+
+---
+
 ## [2.4.1] - 2026-03-10
 
 ### Fixed
