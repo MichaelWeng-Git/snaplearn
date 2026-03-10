@@ -239,17 +239,19 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
       )}
 
       {/* Recent Questions */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
-        <div className="px-4 py-3">
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recent</h3>
-        </div>
-        {history.slice(0, 8).map((entry) => (
-          <div key={entry.id} className="px-4 py-3 flex items-center justify-between gap-3">
-            <p className="text-sm text-gray-700 dark:text-gray-300 truncate">{questionTitle(entry)}</p>
-            <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">{timeAgo(entry.timestamp)}</span>
+      {history.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 divide-y divide-gray-100 dark:divide-gray-700">
+          <div className="px-4 py-3">
+            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recent</h3>
           </div>
-        ))}
-      </div>
+          {history.slice(0, 8).map((entry) => (
+            <div key={entry.id} className="px-4 py-3 flex items-center justify-between gap-3">
+              <p className="text-sm text-gray-700 dark:text-gray-300 truncate">{questionTitle(entry)}</p>
+              <span className="text-xs text-gray-400 dark:text-gray-500 shrink-0">{timeAgo(entry.timestamp)}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Study Streak */}
       <StreakCard streak={streak} />

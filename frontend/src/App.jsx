@@ -232,7 +232,7 @@ function Dashboard() {
       <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-100 dark:border-gray-700">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {(state !== 'idle' || showUpload || viewingHistoryItem || showDailyPractice || showLessons) && history.length > 0 && (
+            {(state !== 'idle' || showUpload || viewingHistoryItem || showDailyPractice || showLessons) && (
               <button onClick={handleReset} className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" title="Back to dashboard">
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
               </button>
@@ -277,22 +277,19 @@ function Dashboard() {
             {state === 'idle' && showDailyPractice && !showLessons && (
               <DailyPracticePage history={history} getToken={getToken} onClose={() => setShowDailyPractice(false)} />
             )}
-            {state === 'idle' && !showDailyPractice && !showLessons && (
-              history.length > 0 && !showUpload ? (
-                <DashboardHome history={history} getToken={getToken} onUploadClick={() => setShowUpload(true)} onStartPractice={() => setShowDailyPractice(true)} onStartLessons={() => setShowLessons(true)} />
-              ) : (
-                <div>
-                  {showUpload && history.length > 0 && (
-                    <div className="text-center mb-4">
-                      <button onClick={() => setShowUpload(false)} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                        Back to dashboard
-                      </button>
-                    </div>
-                  )}
-                  <ImageUpload onSubmit={handleSubmit} />
+            {state === 'idle' && !showDailyPractice && !showLessons && !showUpload && (
+              <DashboardHome history={history} getToken={getToken} onUploadClick={() => setShowUpload(true)} onStartPractice={() => setShowDailyPractice(true)} onStartLessons={() => setShowLessons(true)} />
+            )}
+            {state === 'idle' && !showDailyPractice && !showLessons && showUpload && (
+              <div>
+                <div className="text-center mb-4">
+                  <button onClick={() => setShowUpload(false)} className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to dashboard
+                  </button>
                 </div>
-              )
+                <ImageUpload onSubmit={handleSubmit} />
+              </div>
             )}
             {state === 'loading' && (
               <div>
