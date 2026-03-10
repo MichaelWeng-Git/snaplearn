@@ -1,6 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getRecommendations } from '../api/client';
 
+function normalize(str) {
+  return String(str).trim().toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/½/g, '1/2').replace(/⅓/g, '1/3').replace(/⅔/g, '2/3')
+    .replace(/¼/g, '1/4').replace(/¾/g, '3/4').replace(/⅕/g, '1/5')
+    .replace(/⅖/g, '2/5').replace(/⅗/g, '3/5').replace(/⅘/g, '4/5')
+    .replace(/⅙/g, '1/6').replace(/⅚/g, '5/6').replace(/⅛/g, '1/8')
+    .replace(/⅜/g, '3/8').replace(/⅝/g, '5/8').replace(/⅞/g, '7/8');
+}
+
+function optionMatches(option, correctAnswer) {
+  return normalize(option) === normalize(correctAnswer);
+}
+
 /* ─── Sound effects (Web Audio API) ─── */
 
 function playCorrectSound() {
@@ -145,7 +159,7 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
   function handleSelect(option) {
     if (feedback || selected) return;
     setSelected(option);
-    const correct = option === exercise.correct_answer;
+    const correct = optionMatches(option, exercise.correct_answer);
 
     if (correct) {
       setFeedback('correct');
@@ -323,7 +337,7 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
             {(exercise.options || []).map((option, i) => {
               const letter = String.fromCharCode(65 + i);
               const isThis = selected === option;
-              const isRight = option === exercise.correct_answer;
+              const isRight = optionMatches(option, exercise.correct_answer);
 
               let classes = 'w-full text-left px-5 py-4 rounded-xl border-2 transition-all duration-200 font-medium ';
               if (!feedback) {
@@ -373,6 +387,9 @@ export default function DailyPracticePage({ history, getToken, onClose }) {
               {feedback === 'correct' ? 'Correct! +20 XP' : 'Incorrect'}
             </span>
           </div>
+          {feedback === 'incorrect' && (
+            <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-1">Correct answer: {exercise.correct_answer}</p>
+          )}
           {exercise.explanation && (
             <p className={`text-sm ${feedback === 'correct' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {exercise.explanation}

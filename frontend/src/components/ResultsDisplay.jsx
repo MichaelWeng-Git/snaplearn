@@ -24,15 +24,30 @@ function Section({ title, children }) {
   );
 }
 
+function normalize(str) {
+  return String(str).trim().toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/½/g, '1/2').replace(/⅓/g, '1/3').replace(/⅔/g, '2/3')
+    .replace(/¼/g, '1/4').replace(/¾/g, '3/4').replace(/⅕/g, '1/5')
+    .replace(/⅖/g, '2/5').replace(/⅗/g, '3/5').replace(/⅘/g, '4/5')
+    .replace(/⅙/g, '1/6').replace(/⅚/g, '5/6').replace(/⅛/g, '1/8')
+    .replace(/⅜/g, '3/8').replace(/⅝/g, '5/8').replace(/⅞/g, '7/8');
+}
+
+function optionMatches(option, correctAnswer) {
+  return normalize(option) === normalize(correctAnswer);
+}
+
 export function ExerciseCard({ exercise, index, onAnswer }) {
   const [selected, setSelected] = useState(null);
-  const isCorrect = selected === exercise.correct_answer;
+  const isCorrect = selected !== null && optionMatches(selected, exercise.correct_answer);
   const answered = selected !== null;
+  const anyOptionMatchesCorrect = (exercise.options || []).some(o => optionMatches(o, exercise.correct_answer));
 
   function handleSelect(option) {
     if (answered) return;
     setSelected(option);
-    if (onAnswer) onAnswer(option === exercise.correct_answer);
+    if (onAnswer) onAnswer(optionMatches(option, exercise.correct_answer));
   }
 
   return (
@@ -45,7 +60,7 @@ export function ExerciseCard({ exercise, index, onAnswer }) {
         {(exercise.options || []).map((option, i) => {
           const letter = String.fromCharCode(65 + i);
           const isThis = selected === option;
-          const isRight = option === exercise.correct_answer;
+          const isRight = optionMatches(option, exercise.correct_answer);
           let bg = 'bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500 hover:border-blue-400 dark:hover:border-blue-400 cursor-pointer';
           if (answered && isRight) {
             bg = 'bg-green-50 dark:bg-green-900/40 border-green-500 dark:border-green-400';
@@ -73,6 +88,8 @@ export function ExerciseCard({ exercise, index, onAnswer }) {
       {answered && (
         <div className={`mt-3 p-3 rounded-lg text-sm ${isCorrect ? 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200'}`}>
           <p className="font-semibold mb-1">{isCorrect ? 'Correct!' : 'Incorrect'}</p>
+          {!isCorrect && <p className="mb-1"><span className="font-medium">Correct answer:</span> {exercise.correct_answer}</p>}
+          {!isCorrect && !anyOptionMatchesCorrect && <p className="text-xs opacity-75 mb-1">(Answer did not match any option exactly)</p>}
           <p>{exercise.explanation}</p>
         </div>
       )}
