@@ -74,13 +74,27 @@
 
 /* ─── Math / Markdown rendering ─── */
 
-.math-text p { margin: 0.25em 0; }
+.math-text p { margin: 0.4em 0; line-height: 1.8; }
 .math-text p:first-child { margin-top: 0; }
 .math-text p:last-child { margin-bottom: 0; }
 .math-text ul, .math-text ol { margin: 0.5em 0; padding-left: 1.5em; }
-.math-text li { margin: 0.2em 0; }
+.math-text li { margin: 0.3em 0; line-height: 1.8; }
 .math-text code { font-size: 0.85em; background: rgba(0,0,0,0.06); padding: 0.15em 0.3em; border-radius: 0.25em; }
 .dark .math-text code { background: rgba(255,255,255,0.1); }
-.math-text pre { margin: 0.5em 0; overflow-x: auto; }
-.math-text .katex-display { margin: 0.5em 0; overflow-x: auto; }
-.chat-ai-msg .math-text p { margin: 0.2em 0; }
+.math-text pre { margin: 0.75em 0; overflow-x: auto; padding: 0.75em; background: rgba(0,0,0,0.04); border-radius: 0.5em; }
+.dark .math-text pre { background: rgba(255,255,255,0.06); }
+.math-text .katex-display { margin: 0.75em 0; overflow-x: auto; font-size: 1.15em; }
+.math-text .katex { font-size: 1.05em; }
+.math-text strong { font-weight: 600; }
+.math-text h1, .math-text h2, .math-text h3 { font-weight: 600; margin: 0.75em 0 0.25em; }
+
+/* Answer section — larger text, clear step spacing */
+.answer-section .math-text { font-size: 1.05rem; }
+.answer-section .math-text p { margin: 0.6em 0; line-height: 1.9; }
+.answer-section .math-text .katex-display { font-size: 1.25em; margin: 1em 0; }
+.answer-section .math-text ol { list-style: decimal; padding-left: 1.75em; }
+.answer-section .math-text ol li { margin: 0.5em 0; }
+.answer-section .math-text ul li { margin: 0.4em 0; }
+
+/* Chat AI messages — tighter spacing */
+.chat-ai-msg .math-text p { margin: 0.2em 0; line-height: 1.7; }

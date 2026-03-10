@@ -112,16 +112,24 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
         <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">{data.difficulty_level}</span>
       </div>
 
-      {/* Solution */}
-      {data.solution && (
-        <Section title="Answer">
-          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <MathText>{data.solution}</MathText>
+      {/* Video Lessons Recommendation */}
+      {matchedSubject && onViewLessons && (
+        <button
+          onClick={() => onViewLessons(matchedSubject)}
+          className="w-full p-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg hover:from-teal-600 hover:to-emerald-700 transition-all cursor-pointer flex items-center gap-3"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
           </div>
-        </Section>
+          <div className="text-left">
+            <p className="font-semibold">Watch video lessons on {matchedSubject}</p>
+            <p className="text-sm text-teal-100">Browse curated lessons and tutorials</p>
+          </div>
+          <svg className="w-5 h-5 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
       )}
 
-      {/* AI Chat — between Answer and Watch Video */}
+      {/* AI Chat */}
       {getToken && (
         <AiChat
           getToken={getToken}
@@ -141,21 +149,13 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
         />
       )}
 
-      {/* Video Lessons Recommendation */}
-      {matchedSubject && onViewLessons && (
-        <button
-          onClick={() => onViewLessons(matchedSubject)}
-          className="w-full p-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg hover:from-teal-600 hover:to-emerald-700 transition-all cursor-pointer flex items-center gap-3"
-        >
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+      {/* Solution */}
+      {data.solution && (
+        <Section title="Answer">
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed answer-section">
+            <MathText>{data.solution}</MathText>
           </div>
-          <div className="text-left">
-            <p className="font-semibold">Watch video lessons on {matchedSubject}</p>
-            <p className="text-sm text-teal-100">Browse curated lessons and tutorials</p>
-          </div>
-          <svg className="w-5 h-5 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-        </button>
+        </Section>
       )}
 
       {/* Key Concepts */}
