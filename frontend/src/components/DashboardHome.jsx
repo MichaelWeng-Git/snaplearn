@@ -217,7 +217,8 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
       {/* AI Chat */}
       <AiChat
         getToken={getToken}
-        title="Ask AI a study question"
+        title="Ask AI a Study Question"
+        subtitle="Get help on any topic"
         placeholder="e.g. Explain the Pythagorean theorem..."
         context={
           history.length > 0

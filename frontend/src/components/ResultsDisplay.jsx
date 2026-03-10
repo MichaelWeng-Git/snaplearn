@@ -161,7 +161,8 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
       {getToken && (
         <AiChat
           getToken={getToken}
-          title="Ask AI about this problem"
+          title="Ask AI About This Problem"
+          subtitle="Ask follow-up questions"
           placeholder="e.g. Explain step 2 in more detail..."
           context={[
             `Subject: ${data.subject}`,

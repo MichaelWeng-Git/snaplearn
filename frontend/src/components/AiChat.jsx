@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { sendChat } from '../api/client';
 import MathText from './MathText';
 
-export default function AiChat({ context, getToken, placeholder = 'Ask a question...', title = 'Ask AI' }) {
+export default function AiChat({ context, getToken, placeholder = 'Ask a question...', title = 'Ask AI', subtitle = 'Ask follow-up questions' }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -47,27 +47,31 @@ export default function AiChat({ context, getToken, placeholder = 'Ask a questio
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div className="rounded-2xl overflow-hidden">
+      {/* Header — gradient card matching Daily Practice / Video Lessons style */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+        className="w-full text-left bg-gradient-to-br from-amber-400 via-yellow-500 to-orange-500 rounded-2xl p-5 cursor-pointer hover:shadow-lg hover:shadow-amber-500/25 hover:scale-[1.01] transition-all duration-200 group"
       >
-        <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-indigo-500 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">&#x1F4AC;</span>
+            <div>
+              <h3 className="text-base font-semibold text-white">{title}</h3>
+              <p className="text-white/70 text-xs mt-0.5">{subtitle}</p>
+            </div>
+          </div>
+          <svg
+            className={`w-5 h-5 text-white/60 group-hover:text-white transition-all duration-200 ${open ? 'rotate-180' : ''}`}
+            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{title}</span>
         </div>
-        <svg
-          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-          fill="none" viewBox="0 0 24 24" stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
       </button>
 
       {open && (
-        <div className="border-t border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 border border-t-0 border-gray-100 dark:border-gray-700 rounded-b-2xl -mt-4 pt-4">
           {/* Messages */}
           <div ref={scrollRef} className="max-h-80 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && !loading && (
@@ -78,7 +82,7 @@ export default function AiChat({ context, getToken, placeholder = 'Ask a questio
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'user' ? (
-                  <div className="max-w-[85%] rounded-2xl rounded-br-md px-4 py-2.5 text-sm whitespace-pre-wrap bg-indigo-600 text-white">
+                  <div className="max-w-[85%] rounded-2xl rounded-br-md px-4 py-2.5 text-sm whitespace-pre-wrap bg-amber-500 text-white">
                     {msg.content}
                   </div>
                 ) : (
@@ -115,12 +119,12 @@ export default function AiChat({ context, getToken, placeholder = 'Ask a questio
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               rows={1}
-              className="flex-1 resize-none rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 placeholder-gray-400 dark:placeholder-gray-500"
+              className="flex-1 resize-none rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 placeholder-gray-400 dark:placeholder-gray-500"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim() || loading}
-              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg transition-colors cursor-pointer"
+              className="px-3 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19V5m0 0l-7 7m7-7l7 7" />
