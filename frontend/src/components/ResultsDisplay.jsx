@@ -112,6 +112,35 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
         <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">{data.difficulty_level}</span>
       </div>
 
+      {/* Solution */}
+      {data.solution && (
+        <Section title="Answer">
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <MathText>{data.solution}</MathText>
+          </div>
+        </Section>
+      )}
+
+      {/* AI Chat — between Answer and Watch Video */}
+      {getToken && (
+        <AiChat
+          getToken={getToken}
+          title="Ask AI About This Problem"
+          subtitle="Ask follow-up questions"
+          placeholder="e.g. Explain step 2 in more detail..."
+          context={[
+            `Subject: ${data.subject}`,
+            `Topic: ${data.topic}`,
+            `Subtopic: ${data.subtopic}`,
+            `Difficulty: ${data.difficulty_level}`,
+            data.extracted_text && `Problem text: ${data.extracted_text}`,
+            data.solution && `Solution: ${data.solution}`,
+            data.explanation && `Explanation: ${data.explanation}`,
+            data.key_concepts?.length && `Key concepts: ${data.key_concepts.join(', ')}`,
+          ].filter(Boolean).join('\n')}
+        />
+      )}
+
       {/* Video Lessons Recommendation */}
       {matchedSubject && onViewLessons && (
         <button
@@ -127,15 +156,6 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
           </div>
           <svg className="w-5 h-5 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
         </button>
-      )}
-
-      {/* Solution */}
-      {data.solution && (
-        <Section title="Answer">
-          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            <MathText>{data.solution}</MathText>
-          </div>
-        </Section>
       )}
 
       {/* Key Concepts */}
@@ -156,26 +176,6 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
           <MathText>{data.explanation}</MathText>
         </div>
       </Section>
-
-      {/* AI Chat — right after explanation so it's easy to find */}
-      {getToken && (
-        <AiChat
-          getToken={getToken}
-          title="Ask AI About This Problem"
-          subtitle="Ask follow-up questions"
-          placeholder="e.g. Explain step 2 in more detail..."
-          context={[
-            `Subject: ${data.subject}`,
-            `Topic: ${data.topic}`,
-            `Subtopic: ${data.subtopic}`,
-            `Difficulty: ${data.difficulty_level}`,
-            data.extracted_text && `Problem text: ${data.extracted_text}`,
-            data.solution && `Solution: ${data.solution}`,
-            data.explanation && `Explanation: ${data.explanation}`,
-            data.key_concepts?.length && `Key concepts: ${data.key_concepts.join(', ')}`,
-          ].filter(Boolean).join('\n')}
-        />
-      )}
 
       {/* Resources */}
       <Section title="Recommended Resources">
