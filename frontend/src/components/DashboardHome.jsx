@@ -214,6 +214,19 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
         </div>
       </button>
 
+      {/* AI Chat */}
+      <AiChat
+        getToken={getToken}
+        title="Ask AI a study question"
+        placeholder="e.g. Explain the Pythagorean theorem..."
+        context={
+          history.length > 0
+            ? 'Topics the student has been studying recently:\n' +
+              history.slice(0, 10).map(e => `- ${e.subject} > ${e.topic} > ${e.subtopic}`).join('\n')
+            : ''
+        }
+      />
+
       {/* Study Stats + Daily Goal */}
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-100 dark:border-gray-700">
@@ -256,19 +269,6 @@ export default function DashboardHome({ history, getToken, onUploadClick, onStar
 
       {/* Study Streak */}
       <StreakCard streak={streak} />
-
-      {/* AI Chat */}
-      <AiChat
-        getToken={getToken}
-        title="Ask AI a study question"
-        placeholder="e.g. Explain the Pythagorean theorem..."
-        context={
-          history.length > 0
-            ? 'Topics the student has been studying recently:\n' +
-              history.slice(0, 10).map(e => `- ${e.subject} > ${e.topic} > ${e.subtopic}`).join('\n')
-            : ''
-        }
-      />
     </div>
   );
 }

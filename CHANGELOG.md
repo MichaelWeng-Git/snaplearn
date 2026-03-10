@@ -4,14 +4,30 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.5.1] - 2026-03-10
+
+### Added
+- **Math/LaTeX rendering** — AI chat responses, solutions, and explanations now render math formulas properly using KaTeX (e.g. $\frac{a}{b}$, $\int_0^1 f(x)\,dx$, $\sqrt{x}$)
+- New `MathText` component using react-markdown + remark-math + rehype-katex
+- AI system prompt updated to use LaTeX notation for all math expressions
+
+### Changed
+- **AI Chat moved higher** — on Dashboard, AI Chat is now right after the action buttons (Analyze / Practice / Lessons) instead of at the bottom; on Results page, AI Chat is now right after the Explanation section
+- CSS styles for clean math rendering in chat bubbles and result sections
+
+### New Files
+- `frontend/src/components/MathText.jsx`
+
+---
+
 ## [2.5.0] - 2026-03-10
 
 ### Added
 - **AI Q&A Chat** — ask follow-up questions after analyzing a photo (e.g. "explain step 2", "give me a harder example") or ask general study questions from the Dashboard
 - New `POST /api/chat` endpoint with full conversation history, context-aware system prompt, JWT auth, GPT-4o (max_tokens 1024)
 - Reusable `AiChat` component: collapsible panel with chevron toggle, chat bubbles (indigo user / gray AI), typing indicator (3 bouncing dots), auto-scroll, Enter-to-send, Shift+Enter for newline, dark mode support
-- Results page: "Ask AI about this problem" panel after Common Mistakes, with full problem context (subject, topic, extracted text, solution, explanation, key concepts)
-- Dashboard: "Ask AI a study question" panel after Study Streak, with context from last 10 study history entries
+- Results page: "Ask AI about this problem" panel after Explanation, with full problem context (subject, topic, extracted text, solution, explanation, key concepts)
+- Dashboard: "Ask AI a study question" panel after action buttons, with context from last 10 study history entries
 
 ### New Files
 - `frontend/src/components/AiChat.jsx`

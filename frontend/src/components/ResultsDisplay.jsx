@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SUBJECT_NAMES } from './LessonsPage';
 import AiChat from './AiChat';
+import MathText from './MathText';
 
 const SUBJECT_ALIASES = {
   'mathematics': 'Math', 'algebra': 'Math', 'calculus': 'Math', 'geometry': 'Math',
@@ -131,7 +132,9 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
       {/* Solution */}
       {data.solution && (
         <Section title="Answer">
-          <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{data.solution}</p>
+          <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+            <MathText>{data.solution}</MathText>
+          </div>
         </Section>
       )}
 
@@ -149,8 +152,29 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
 
       {/* Explanation */}
       <Section title="Explanation">
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{data.explanation}</p>
+        <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
+          <MathText>{data.explanation}</MathText>
+        </div>
       </Section>
+
+      {/* AI Chat — right after explanation so it's easy to find */}
+      {getToken && (
+        <AiChat
+          getToken={getToken}
+          title="Ask AI about this problem"
+          placeholder="e.g. Explain step 2 in more detail..."
+          context={[
+            `Subject: ${data.subject}`,
+            `Topic: ${data.topic}`,
+            `Subtopic: ${data.subtopic}`,
+            `Difficulty: ${data.difficulty_level}`,
+            data.extracted_text && `Problem text: ${data.extracted_text}`,
+            data.solution && `Solution: ${data.solution}`,
+            data.explanation && `Explanation: ${data.explanation}`,
+            data.key_concepts?.length && `Key concepts: ${data.key_concepts.join(', ')}`,
+          ].filter(Boolean).join('\n')}
+        />
+      )}
 
       {/* Resources */}
       <Section title="Recommended Resources">
@@ -207,25 +231,6 @@ export default function ResultsDisplay({ data, onViewLessons, getToken }) {
           ))}
         </ul>
       </Section>
-
-      {/* AI Chat */}
-      {getToken && (
-        <AiChat
-          getToken={getToken}
-          title="Ask AI about this problem"
-          placeholder="e.g. Explain step 2 in more detail..."
-          context={[
-            `Subject: ${data.subject}`,
-            `Topic: ${data.topic}`,
-            `Subtopic: ${data.subtopic}`,
-            `Difficulty: ${data.difficulty_level}`,
-            data.extracted_text && `Problem text: ${data.extracted_text}`,
-            data.solution && `Solution: ${data.solution}`,
-            data.explanation && `Explanation: ${data.explanation}`,
-            data.key_concepts?.length && `Key concepts: ${data.key_concepts.join(', ')}`,
-          ].filter(Boolean).join('\n')}
-        />
-      )}
     </div>
   );
 }

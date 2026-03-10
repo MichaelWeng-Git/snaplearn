@@ -71,3 +71,16 @@
   border-radius: 9999px;
   animation: confettiGlow 0.6s ease-out forwards;
 }
+
+/* ─── Math / Markdown rendering ─── */
+
+.math-text p { margin: 0.25em 0; }
+.math-text p:first-child { margin-top: 0; }
+.math-text p:last-child { margin-bottom: 0; }
+.math-text ul, .math-text ol { margin: 0.5em 0; padding-left: 1.5em; }
+.math-text li { margin: 0.2em 0; }
+.math-text code { font-size: 0.85em; background: rgba(0,0,0,0.06); padding: 0.15em 0.3em; border-radius: 0.25em; }
+.dark .math-text code { background: rgba(255,255,255,0.1); }
+.math-text pre { margin: 0.5em 0; overflow-x: auto; }
+.math-text .katex-display { margin: 0.5em 0; overflow-x: auto; }
+.chat-ai-msg .math-text p { margin: 0.2em 0; }

@@ -336,7 +336,11 @@ async def chat(body: ChatRequest, user: dict = Depends(verify_token)):
     system_content = (
         "You are a friendly, expert tutor. Answer clearly and concisely at the "
         "student's level. Use examples when helpful. If the student asks you to "
-        "generate practice problems, include answers. Keep responses focused and under 300 words."
+        "generate practice problems, include answers. Keep responses focused and under 300 words.\n\n"
+        "IMPORTANT: When writing math expressions, use LaTeX notation so they render properly. "
+        "Use $...$ for inline math (e.g. $x^2 + y^2 = z^2$) and $$...$$ for display math "
+        "(e.g. $$\\int_0^1 f(x)\\,dx$$). Always use LaTeX for fractions ($\\frac{a}{b}$), "
+        "exponents ($x^n$), roots ($\\sqrt{x}$), summations ($\\sum_{i=1}^{n}$), etc."
     )
     if body.context:
         system_content += f"\n\nContext about what the student is studying:\n{body.context}"
