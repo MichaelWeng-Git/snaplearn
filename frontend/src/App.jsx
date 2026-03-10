@@ -361,10 +361,45 @@ function Dashboard() {
   );
 }
 
-/* ─── Auth wrapper (only mounts ClerkProvider when needed) ─── */
+/* ─── Sign-In Page ─── */
 
-function AuthedApp({ onBack }) {
+function SignInPage({ onBack }) {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+      <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between px-6 py-3 max-w-6xl mx-auto">
+          <button onClick={onBack} className="flex items-center gap-2 cursor-pointer">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            </div>
+            <span className="text-lg font-bold text-gray-900 dark:text-gray-100">SnapLearn</span>
+          </button>
+          <button onClick={onBack} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer">
+            &larr; Back to home
+          </button>
+        </div>
+      </nav>
+      <div className="flex-1 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-600/25">
+              <svg className="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Welcome to SnapLearn</h1>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">Sign in to start your learning journey</p>
+          </div>
+          <SignIn />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── App content router (inside ClerkProvider) ─── */
+
+function AppContent() {
   const { isLoaded, isSignedIn } = useAuth();
+  const [showSignIn, setShowSignIn] = useState(false);
 
   if (!isLoaded) {
     return (
@@ -374,36 +409,19 @@ function AuthedApp({ onBack }) {
     );
   }
 
-  if (!isSignedIn) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <button onClick={onBack} className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-4 inline-block cursor-pointer">&larr; Back to home</button>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">SnapLearn</h1>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Sign in to start analyzing your questions</p>
-          </div>
-          <SignIn />
-        </div>
-      </div>
-    );
-  }
+  if (isSignedIn) return <Dashboard />;
 
-  return <Dashboard />;
+  if (showSignIn) return <SignInPage onBack={() => setShowSignIn(false)} />;
+
+  return <LandingPage onSignIn={() => setShowSignIn(true)} />;
 }
 
 /* ─── Root App ─── */
 
 export default function App() {
-  const [showAuth, setShowAuth] = useState(false);
-
-  if (!showAuth) {
-    return <LandingPage onSignIn={() => setShowAuth(true)} />;
-  }
-
   return (
     <ClerkProvider publishableKey={CLERK_KEY}>
-      <AuthedApp onBack={() => setShowAuth(false)} />
+      <AppContent />
     </ClerkProvider>
   );
 }
