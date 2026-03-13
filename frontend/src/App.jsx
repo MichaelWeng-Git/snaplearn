@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ClerkProvider, SignIn, UserButton, UserProfile, useAuth, useUser } from '@clerk/react';
+import TermsAgreement, { hasAcceptedTerms } from './components/TermsAgreement';
 import ImageUpload from './components/ImageUpload';
 import LoadingState from './components/LoadingState';
 import ResultsDisplay from './components/ResultsDisplay';
@@ -423,9 +424,14 @@ function AppContent() {
 /* ─── Root App ─── */
 
 export default function App() {
+  const [termsAccepted, setTermsAccepted] = useState(hasAcceptedTerms);
+
   return (
-    <ClerkProvider publishableKey={CLERK_KEY}>
-      <AppContent />
-    </ClerkProvider>
+    <>
+      {!termsAccepted && <TermsAgreement onAccept={() => setTermsAccepted(true)} />}
+      <ClerkProvider publishableKey={CLERK_KEY}>
+        <AppContent />
+      </ClerkProvider>
+    </>
   );
 }
