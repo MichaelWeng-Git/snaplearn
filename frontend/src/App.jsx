@@ -162,7 +162,7 @@ function LandingPage({ onSignIn }) {
       <section className="max-w-6xl mx-auto px-6 py-24">
         <div className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 p-12 sm:p-16 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white">Ready to study smarter?</h2>
-          <p className="mt-4 text-blue-100 text-lg max-w-md mx-auto">Join students who are already using AI to learn faster and get better grades.</p>
+          <p className="mt-4 text-blue-100 text-lg max-w-md mx-auto">Start your learning journey today.</p>
           <button onClick={onSignIn} className="mt-8 px-8 py-3.5 text-base font-semibold text-blue-600 bg-white hover:bg-blue-50 rounded-xl transition-colors shadow-lg cursor-pointer">
             Get started for free
           </button>
