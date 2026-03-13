@@ -17,7 +17,7 @@ const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_c2hhcml
 
 /* ─── Landing Page (no Clerk dependency) ─── */
 
-function LandingPage({ onSignIn }) {
+function LandingPage({ onSignIn, onShowTerms }) {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
@@ -178,7 +178,12 @@ function LandingPage({ onSignIn }) {
             </div>
             SnapLearn
           </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500">Built with GPT-4o Vision. Your images are processed securely and never stored.</p>
+          <div className="flex items-center gap-4">
+            <button onClick={onShowTerms} className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium cursor-pointer">
+              Terms of Service
+            </button>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Built with GPT-4o Vision. Your images are processed securely and never stored.</p>
+          </div>
         </div>
       </footer>
     </div>
@@ -398,7 +403,7 @@ function SignInPage({ onBack }) {
 
 /* ─── App content router (inside ClerkProvider) ─── */
 
-function AppContent() {
+function AppContent({ onShowTerms }) {
   const { isLoaded, isSignedIn } = useAuth();
   const [showSignIn, setShowSignIn] = useState(false);
 
@@ -418,19 +423,21 @@ function AppContent() {
   }
 
   // Landing page renders instantly — no waiting for Clerk
-  return <LandingPage onSignIn={() => setShowSignIn(true)} />;
+  return <LandingPage onSignIn={() => setShowSignIn(true)} onShowTerms={onShowTerms} />;
 }
 
 /* ─── Root App ─── */
 
 export default function App() {
   const [termsAccepted, setTermsAccepted] = useState(hasAcceptedTerms);
+  const [showTerms, setShowTerms] = useState(false);
 
   return (
     <>
       {!termsAccepted && <TermsAgreement onAccept={() => setTermsAccepted(true)} />}
+      {termsAccepted && showTerms && <TermsAgreement onAccept={() => setShowTerms(false)} viewOnly />}
       <ClerkProvider publishableKey={CLERK_KEY}>
-        <AppContent />
+        <AppContent onShowTerms={() => setShowTerms(true)} />
       </ClerkProvider>
     </>
   );

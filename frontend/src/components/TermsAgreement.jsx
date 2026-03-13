@@ -6,11 +6,11 @@ export function hasAcceptedTerms() {
   return localStorage.getItem(TERMS_KEY) === 'true';
 }
 
-export default function TermsAgreement({ onAccept }) {
-  const [showFull, setShowFull] = useState(false);
+export default function TermsAgreement({ onAccept, viewOnly = false }) {
+  const [showFull, setShowFull] = useState(viewOnly);
 
   function handleAccept() {
-    localStorage.setItem(TERMS_KEY, 'true');
+    if (!viewOnly) localStorage.setItem(TERMS_KEY, 'true');
     onAccept();
   }
 
@@ -24,8 +24,8 @@ export default function TermsAgreement({ onAccept }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white">Welcome to SnapLearn</h2>
-          <p className="text-blue-100 text-sm mt-2">Please review and accept our terms to continue</p>
+          <h2 className="text-2xl font-bold text-white">{viewOnly ? 'Terms & Privacy' : 'Welcome to SnapLearn'}</h2>
+          <p className="text-blue-100 text-sm mt-2">{viewOnly ? 'SnapLearn Terms of Service & Privacy Policy' : 'Please review and accept our terms to continue'}</p>
         </div>
 
         {/* Terms content */}
@@ -69,17 +69,19 @@ export default function TermsAgreement({ onAccept }) {
           )}
         </div>
 
-        {/* Accept button */}
+        {/* Button */}
         <div className="px-6 pb-6">
           <button
             onClick={handleAccept}
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors cursor-pointer shadow-lg shadow-blue-600/25"
           >
-            I Agree &amp; Continue
+            {viewOnly ? 'Close' : 'I Agree & Continue'}
           </button>
-          <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-3">
-            By clicking "I Agree &amp; Continue", you accept our Terms of Service and Privacy Policy.
-          </p>
+          {!viewOnly && (
+            <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-3">
+              By clicking "I Agree &amp; Continue", you accept our Terms of Service and Privacy Policy.
+            </p>
+          )}
         </div>
       </div>
     </div>
