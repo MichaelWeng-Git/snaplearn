@@ -4,6 +4,15 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.5.4] - 2026-03-14
+
+### Added
+- **Programming (Python) subject** in Video Lessons — 10 units across Beginner/Intermediate/Advanced levels inspired by PyGarden, covering: Getting Started, Variables & Data Types, Control Flow, Functions, Data Structures, String Methods & Regex, Error Handling, OOP, File I/O, Modules & Packages, and Advanced Topics (decorators, generators, threading)
+- 30+ curated Python tutorial videos from Corey Schafer, freeCodeCamp, Fireship, CS Dojo, Harvard CS50, and more
+- Subject alias mapping: "python" and "programming" now link to the Programming lessons page from analysis results
+
+---
+
 ## [2.5.3] - 2026-03-14
 
 ### Changed

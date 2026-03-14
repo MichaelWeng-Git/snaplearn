@@ -385,6 +385,74 @@ const SUBJECTS = {
     },
   },
 
+  Programming: {
+    icon: 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',
+    color: 'from-yellow-400 to-amber-500',
+    grades: {
+      'Beginner': [
+        { unit: 'Getting Started', desc: 'Install Python, hello world, and basic concepts', videos: [
+          { id: 'x7X9w_GIm1s', title: 'Python in 100 Seconds', channel: 'Fireship' },
+          { id: 'YYXdXT2l-Gg', title: 'Install and Setup for Mac and Windows', channel: 'Corey Schafer' },
+          { id: 'rfscVS0vtbw', title: 'Learn Python – Full Course for Beginners', channel: 'freeCodeCamp' },
+        ]},
+        { unit: 'Variables & Data Types', desc: 'Numbers, strings, booleans, and type conversion', videos: [
+          { id: 'Z1Yd7upQsXY', title: 'What Are Variables?', channel: 'CS Dojo' },
+          { id: 'khKv-8q7YmY', title: 'Integers and Floats – Numeric Data', channel: 'Corey Schafer' },
+          { id: 'k9TUPpGqYTo', title: 'Strings – Working with Textual Data', channel: 'Corey Schafer' },
+        ]},
+        { unit: 'Control Flow', desc: 'If/else statements, for loops, and while loops', videos: [
+          { id: 'DZwmZ8Usvnk', title: 'Conditionals and Booleans – If, Else, Elif', channel: 'Corey Schafer' },
+          { id: '6iF8Xb7Z3wQ', title: 'Loops and Iterations – For/While Loops', channel: 'Corey Schafer' },
+          { id: '_uQrJ0TkZlc', title: 'Python Full Course for Beginners', channel: 'Programming with Mosh' },
+        ]},
+      ],
+      'Intermediate': [
+        { unit: 'Functions', desc: 'Defining functions, parameters, return values, and lambda', videos: [
+          { id: '9Os0o3wzS_I', title: 'Functions', channel: 'Corey Schafer' },
+          { id: 'u-OmVr_fT4s', title: 'Python Functions for Absolute Beginners', channel: 'CS Dojo' },
+          { id: '25ovCm9jKfA', title: 'Lambda Expressions & Anonymous Functions', channel: 'Socratica' },
+        ]},
+        { unit: 'Data Structures', desc: 'Lists, dictionaries, tuples, sets, and comprehensions', videos: [
+          { id: 'W8KRzm-HUcc', title: 'Lists, Tuples, and Sets', channel: 'Corey Schafer' },
+          { id: 'daefaLgNkw0', title: 'Dictionaries – Key-Value Pairs', channel: 'Corey Schafer' },
+          { id: '3dt4OGnU5sM', title: 'Comprehensions – How They Work', channel: 'Corey Schafer' },
+        ]},
+        { unit: 'String Methods & Regex', desc: 'Formatting, slicing, and regular expressions', videos: [
+          { id: 'vTX3IwquFkc', title: 'String Formatting – Advanced Operations', channel: 'Corey Schafer' },
+          { id: 'K8L6KVGG-7o', title: 're Module – Regular Expressions', channel: 'Corey Schafer' },
+        ]},
+        { unit: 'Error Handling', desc: 'Try/except blocks and debugging techniques', videos: [
+          { id: 'NIWwJbo-9_8', title: 'Try/Except Blocks for Error Handling', channel: 'Corey Schafer' },
+          { id: '6tNS--WetLI', title: 'Unit Testing Your Code with unittest', channel: 'Corey Schafer' },
+        ]},
+      ],
+      'Advanced': [
+        { unit: 'Object-Oriented Programming', desc: 'Classes, inheritance, and special methods', videos: [
+          { id: 'ZDa-Z5JzLYM', title: 'OOP 1: Classes and Instances', channel: 'Corey Schafer' },
+          { id: 'RSl87lqOXDE', title: 'OOP 4: Inheritance – Creating Subclasses', channel: 'Corey Schafer' },
+          { id: '3ohzBxoFHAY', title: 'OOP 5: Special (Magic/Dunder) Methods', channel: 'Corey Schafer' },
+          { id: 'Ej_02ICOIgs', title: 'OOP with Python – Full Course', channel: 'freeCodeCamp' },
+        ]},
+        { unit: 'File I/O & Data', desc: 'Reading/writing files, CSV, and JSON', videos: [
+          { id: 'Uh2ebFW8OYM', title: 'File Objects – Reading and Writing', channel: 'Corey Schafer' },
+          { id: 'q5uM4VKywbA', title: 'CSV Module – Read, Parse, and Write', channel: 'Corey Schafer' },
+          { id: '9N6a-VLBa2I', title: 'Working with JSON Data', channel: 'Corey Schafer' },
+        ]},
+        { unit: 'Modules & Packages', desc: 'Importing, creating modules, and the standard library', videos: [
+          { id: 'CqvZ3vGoGs0', title: 'Import Modules and the Standard Library', channel: 'Corey Schafer' },
+          { id: 'GxCXiSkm6no', title: 'Importing Your Own Modules Properly', channel: 'Corey Schafer' },
+          { id: 'sugvnHA7ElY', title: 'if __name__ == \'__main__\'', channel: 'Corey Schafer' },
+        ]},
+        { unit: 'Advanced Topics', desc: 'Decorators, generators, threading, and beyond', videos: [
+          { id: 'FsAPt_9Bf3U', title: 'Decorators – Alter Function Functionality', channel: 'Corey Schafer' },
+          { id: 'bD05uGo_sVI', title: 'Generators – How to Use Them', channel: 'Corey Schafer' },
+          { id: 'IEEhzQoKtQU', title: 'Threading – Run Code Concurrently', channel: 'Corey Schafer' },
+          { id: 'nLRL_NcnK-4', title: 'CS50P – Full Python University Course', channel: 'Harvard CS50' },
+        ]},
+      ],
+    },
+  },
+
   English: {
     icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
     color: 'from-rose-400 to-pink-500',

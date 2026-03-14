@@ -6,7 +6,8 @@ import MathText from './MathText';
 const SUBJECT_ALIASES = {
   'mathematics': 'Math', 'algebra': 'Math', 'calculus': 'Math', 'geometry': 'Math',
   'trigonometry': 'Math', 'statistics': 'Math', 'arithmetic': 'Math',
-  'computer science': 'Computer Science', 'programming': 'Computer Science', 'coding': 'Computer Science',
+  'computer science': 'Computer Science', 'coding': 'Computer Science',
+  'programming': 'Programming', 'python': 'Programming', 'python programming': 'Programming',
   'science': 'Biology',
 };
 
