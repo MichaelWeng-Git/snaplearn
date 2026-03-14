@@ -4,6 +4,18 @@ All notable changes to SnapLearn are documented in this file.
 
 ---
 
+## [2.5.3] - 2026-03-14
+
+### Changed
+- **Terms of Service redesigned** — now slides up from the bottom like a cookie consent banner with Accept/Reject buttons; includes 9 detailed legal sections covering purpose, AI disclaimers, image processing, Clerk authentication, data privacy, age requirements, fair use, liability, and terms changes
+- **Terms are session-only** — terms banner appears on every visit to the landing page (no longer persisted in localStorage)
+- **Scroll indicator** — bouncing down-arrow with gradient fade on Terms banner; auto-hides when user scrolls to bottom
+- **Clerk branding hidden** — sign-in page no longer shows Clerk header, footer, or branding; styled to match SnapLearn theme
+- **Page flash fixed** — added loading spinner with SnapLearn logo while Clerk initializes, preventing the landing page from flashing before the dashboard
+- **Google OAuth redirect mode** — added `forceRedirectUrl` to Clerk SignIn to use full-page redirect instead of popup (works around Chrome third-party cookie restrictions)
+
+---
+
 ## [2.5.1] - 2026-03-10
 
 ### Added

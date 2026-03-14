@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ClerkProvider, SignIn, UserButton, UserProfile, useAuth, useUser } from '@clerk/react';
-import TermsAgreement, { hasAcceptedTerms } from './components/TermsAgreement';
+import TermsAgreement from './components/TermsAgreement';
 import ImageUpload from './components/ImageUpload';
 import LoadingState from './components/LoadingState';
 import ResultsDisplay from './components/ResultsDisplay';
@@ -394,7 +394,28 @@ function SignInPage({ onBack }) {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Welcome to SnapLearn</h1>
             <p className="mt-2 text-gray-500 dark:text-gray-400">Sign in to start your learning journey</p>
           </div>
-          <SignIn />
+          <SignIn
+            forceRedirectUrl={window.location.origin}
+            appearance={{
+              variables: {
+                colorPrimary: '#4f46e5',
+                colorText: '#1f2937',
+                colorBackground: '#ffffff',
+                colorInputBackground: '#f9fafb',
+                colorInputBorder: '#e5e7eb',
+                borderRadius: '0.75rem',
+              },
+              elements: {
+                headerTitle: { display: 'none' },
+                headerSubtitle: { display: 'none' },
+                footerAction: { display: 'none' },
+                footer: { display: 'none' },
+                card: { boxShadow: 'none', border: 'none' },
+                rootBox: { width: '100%' },
+                cardBox: { width: '100%', boxShadow: 'none' },
+              },
+            }}
+          />
         </div>
       </div>
     </div>
@@ -403,42 +424,50 @@ function SignInPage({ onBack }) {
 
 /* ─── App content router (inside ClerkProvider) ─── */
 
-function AppContent({ onShowTerms }) {
+function AppContent() {
   const { isLoaded, isSignedIn } = useAuth();
   const [showSignIn, setShowSignIn] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
 
-  // Already signed in → Dashboard (show spinner only while checking)
-  if (isLoaded && isSignedIn) return <Dashboard />;
-
-  // User clicked sign in → show sign-in page (spinner while Clerk loads)
-  if (showSignIn) {
-    if (!isLoaded) {
-      return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  // Clerk still loading — show a simple spinner, never flash other pages
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
+            <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+          </div>
+          <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent"></div>
         </div>
-      );
-    }
+      </div>
+    );
+  }
+
+  // Already signed in → Dashboard
+  if (isSignedIn) return <Dashboard />;
+
+  // User clicked sign in → show sign-in page
+  if (showSignIn) {
     return <SignInPage onBack={() => setShowSignIn(false)} />;
   }
 
-  // Landing page renders instantly — no waiting for Clerk
-  return <LandingPage onSignIn={() => setShowSignIn(true)} onShowTerms={onShowTerms} />;
+  // Landing page — show terms banner on every visit
+  return (
+    <>
+      <LandingPage onSignIn={() => { if (termsAccepted) setShowSignIn(true); }} onShowTerms={() => setShowTerms(true)} />
+      {!termsAccepted && <TermsAgreement onAccept={() => setTermsAccepted(true)} onReject={() => {}} />}
+      {showTerms && <TermsAgreement onAccept={() => setShowTerms(false)} viewOnly />}
+    </>
+  );
 }
 
 /* ─── Root App ─── */
 
 export default function App() {
-  const [termsAccepted, setTermsAccepted] = useState(hasAcceptedTerms);
-  const [showTerms, setShowTerms] = useState(false);
-
   return (
-    <>
-      {!termsAccepted && <TermsAgreement onAccept={() => setTermsAccepted(true)} />}
-      {termsAccepted && showTerms && <TermsAgreement onAccept={() => setShowTerms(false)} viewOnly />}
-      <ClerkProvider publishableKey={CLERK_KEY}>
-        <AppContent onShowTerms={() => setShowTerms(true)} />
-      </ClerkProvider>
-    </>
+    <ClerkProvider publishableKey={CLERK_KEY}>
+      <AppContent />
+    </ClerkProvider>
   );
 }
